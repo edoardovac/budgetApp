@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet, Button } from "react-native";
 import { StatusBar } from "expo-status-bar";
 
-export default function HomeScreen() {
+export default function ChartsScreen() {
   return (
     <View style={styles.container}>
-      <Text>This is the Home Screen</Text>
+      <Text>This is the Charts Screen</Text>
       <StatusBar />
     </View>
   );
@@ -13,6 +13,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "green",
+    backgroundColor: "lightblue",
   },
 });
