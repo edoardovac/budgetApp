@@ -3,9 +3,9 @@ export const populateAllTablesQuery = () => {
     ('Food', 'Expenses related to groceries and dining out'),
     ('Transportation', 'Expenses related to commuting and vehicle maintenance'),
     ('Utilities', 'Expenses related to electricity, water, and internet bills'),
-    ('Entertainment', 'Expenses related to leisure activities and entertainment');
-    INSERT INTO Category (name) VALUES ('Miscellaneous');
-    
+    ('Entertainment', 'Expenses related to leisure activities and entertainment'),
+    ('Miscellaneous', NULL);
+        
     INSERT INTO Expense (name, description, import, date, type, fixed, categoryId) VALUES
     ('Groceries', 'Weekly grocery shopping', 100.00, '2024-04-15', 'CASH', 'YES', 1),
     ('Gas', 'Refueling the car', 50.00, '2024-04-16', 'CREDIT CARD', 'YES', 2),

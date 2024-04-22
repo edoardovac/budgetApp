@@ -33,6 +33,7 @@ export const createIncomeTableQuery = () => {
     fixed TEXT,
     categoryId INTEGER NOT NULL, 
     FOREIGN KEY(categoryId) REFERENCES Category(categoryId), 
-    CHECK (type = 'CASH' OR type = 'DEBIT CARD' OR type = 'CREDIT CARD' OR type = 'CHECK' OR type = 'WIRE TRANSFER' OR type = 'BANK TRANSFER'  OR type = 'CRYPTO' OR type = 'OTHER')
-    CHECK (fixed = "YES")`;
+    CHECK (type = 'CASH' OR type = 'DEBIT CARD' OR type = 'CREDIT CARD' OR type = 'CHECK' OR type = 'WIRE TRANSFER' OR type = 'BANK TRANSFER'  OR type = 'CRYPTO' OR type = 'OTHER'),
+    CHECK (fixed = "YES")
+    );`;
 };

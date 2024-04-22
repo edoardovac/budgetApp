@@ -6,13 +6,10 @@ import {
 } from "../queries/createQueries/createSingleTableQueries";
 
 export const createAllTables = (db) => {
-  db.transaction(
-    (tx) => {
-      tx.executeSql(createAllTablesQuery());
-    },
-    (error) => console.error("Error when creating DB", error),
-    () => console.log("Db created successfully")
-  );
+  console.log("Creating all tables...");
+  createCategoryTable(db);
+  createExpenseTable(db);
+  createIncomeTable(db);
 };
 
 export const createCategoryTable = (db) => {

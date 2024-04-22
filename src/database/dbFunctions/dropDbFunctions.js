@@ -6,13 +6,10 @@ import {
 } from "../queries/dropQueries/dropSingleTableQueries";
 
 export const dropAllTables = (db) => {
-  db.transaction(
-    (tx) => {
-      tx.executeSql(dropAllTablesQuery());
-    },
-    (error) => console.error("Error when deleting all tables: ", error),
-    () => console.log("All tables dropped successfully")
-  );
+  console.log("Dropping all tables...");
+  dropIncomeTable(db);
+  dropExpenseTable(db);
+  dropCategoryTable(db);
 };
 
 export const dropCategoryTable = (db) => {

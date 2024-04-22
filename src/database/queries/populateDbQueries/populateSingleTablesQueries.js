@@ -9,10 +9,10 @@ export const populateCategoryQuery = () => {
 
 export const populateExpenseQuery = () => {
   return `INSERT INTO Expense (name, description, import, date, type, fixed, categoryId) VALUES
-    ('Groceries', 'Weekly grocery shopping', 100.00, '2024-04-15', 'CASH', 'YES', 1),
+    ('Groceries', 'Weekly grocery shopping', 75.00, '2024-04-15', 'CASH', 'YES', 1),
     ('Gas', 'Refueling the car', 50.00, '2024-04-16', 'CREDIT CARD', 'YES', 2),
     ('Electricity Bill', NULL, 80.00, '2024-04-10', 'BANK TRANSFER', 'YES', 3),
-    ('Restaurant', 'Dinner with friends', 70.00, '2024-04-12', 'DEBIT CARD', NULL, 4),
+    ('Restaurant', 'Dinner with friends', 70.50, '2024-04-12', 'DEBIT CARD', NULL, 4),
     ('Movie Tickets', NULL, 30.00, '2024-04-14', 'CASH', NULL, 4),
     ('Rent', NULL, 1000.00, '2024-04-01', 'BANK TRANSFER', 'YES', 5),
     ('Internet Bill', 'Monthly internet subscription', 50.00, '2024-04-05', 'CREDIT CARD', 'YES', 3),

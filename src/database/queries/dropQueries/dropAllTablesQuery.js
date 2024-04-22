@@ -1,5 +1,5 @@
 export const dropAllTablesQuery = () => {
-  return `DROP TABLE Expense;
-    DROP TABLE Income;
-    DROP TABLE Category;`;
+  return `DROP TABLE IF EXISTS Expense;
+    DROP TABLE IF EXISTS Income;
+    DROP TABLE IF EXISTS Category;`;
 };

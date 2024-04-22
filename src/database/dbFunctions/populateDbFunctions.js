@@ -6,13 +6,10 @@ import {
 } from "../queries/populateDbQueries/populateSingleTablesQueries";
 
 export const populateAllTables = (db) => {
-  db.transaction(
-    (tx) => {
-      tx.executeSql(populateAllTablesQuery());
-    },
-    (error) => console.error("Error when populating all the Tables: ", error),
-    () => console.log("All tables populated dropped successfully")
-  );
+  console.log("Populating all tables...");
+  populateCategoryTable(db);
+  populateExpenseTable(db);
+  populateIncomeTable(db);
 };
 
 export const populateCategoryTable = (db) => {
@@ -21,7 +18,7 @@ export const populateCategoryTable = (db) => {
       tx.executeSql(populateCategoryQuery());
     },
     (error) => console.error("Error when populating Catagory table: ", error),
-    () => console.log("Category table populated dropped successfully")
+    () => console.log("Category table populated successfully")
   );
 };
 
@@ -31,7 +28,7 @@ export const populateExpenseTable = (db) => {
       tx.executeSql(populateExpenseQuery());
     },
     (error) => console.error("Error when populating Expense table: ", error),
-    () => console.log("Expense table populated dropped successfully")
+    () => console.log("Expense table populated successfully")
   );
 };
 
@@ -41,6 +38,6 @@ export const populateIncomeTable = (db) => {
       tx.executeSql(populateIncomeQuery());
     },
     (error) => console.error("Error when populating Income table: ", error),
-    () => console.log("Income table populated dropped successfully")
+    () => console.log("Income table populated successfully")
   );
 };

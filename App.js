@@ -6,13 +6,8 @@ import { createAllTables } from "./src/database/dbFunctions/createDbFunctions";
 import { NavigationContainer } from "@react-navigation/native";
 import DrawerNavigator from "./src/components/DrawerNavigator";
 
-const db = SQLite.openDatabase("budgetdb.db");
-
 export default function App() {
-  // creates db if not already existing
-  useEffect(() => {
-    createAllTables(db);
-  }, []);
+  const db = SQLite.openDatabase("budgetdb.db");
 
   return (
     <NavigationContainer>

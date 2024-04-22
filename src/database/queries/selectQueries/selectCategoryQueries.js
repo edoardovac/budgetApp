@@ -1,3 +1,3 @@
 export const selectAllCategoryQuery = () => {
-  return `SELECT * FROM Category;`;
+  return `SELECT categoryId, name, description FROM Category;`;
 };
