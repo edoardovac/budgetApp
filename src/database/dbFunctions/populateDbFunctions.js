@@ -1,4 +1,3 @@
-import { populateAllTablesQuery } from "../queries/populateDbQueries/populateAllTablesQuery";
 import {
   populateCategoryQuery,
   populateExpenseQuery,

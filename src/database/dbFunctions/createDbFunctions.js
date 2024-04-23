@@ -1,4 +1,3 @@
-import { createAllTablesQuery } from "../queries/createQueries/createAllTablesQuery";
 import {
   createCategoryTableQuery,
   createExpenseTableQuery,

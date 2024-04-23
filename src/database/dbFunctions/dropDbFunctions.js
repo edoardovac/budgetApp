@@ -1,4 +1,3 @@
-import { dropAllTablesQuery } from "../queries/dropQueries/dropAllTablesQuery";
 import {
   dropCategoryTableQuery,
   dropExpenseTableQuery,

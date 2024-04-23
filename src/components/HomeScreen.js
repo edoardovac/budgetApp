@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
 import { useEffect, useState } from "react";
@@ -33,15 +33,11 @@ export default function HomeScreen() {
     setNetBalance(incomesSum - expensesSum);
   }, [incomesSum, expensesSum]);
 
-  const fetchExpensesMonth = () => {
-    selectAllExpenseMonth(db, setExpensesMonth);
-  };
-
   return (
     <View style={styles.container}>
       <View>
         <Text>MONEY TO SPEND THIS MONTH STILL: {netBalance.toFixed(2)} €</Text>
-        <Button title="refresh" onPress={() => fetchExpensesMonth()} />
+        <Text>---</Text>
       </View>
       <View>
         <Text>EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €</Text>
@@ -75,6 +71,7 @@ export default function HomeScreen() {
             </View>
           )}
         />
+        <Text>---</Text>
       </View>
       <StatusBar />
     </View>

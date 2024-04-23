@@ -13,9 +13,9 @@ export default function TabNavigator() {
   // redorects and names are WRONG
   return (
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={StackNavigator} />
-      <Tab.Screen name="Settings" component={StackNavigator} />
-      <Tab.Screen name="Charts" component={ChartsScreen} />
+      <Tab.Screen name="Balance" component={StackNavigator} />
+      <Tab.Screen name="Income" component={StackNavigator} />
+      <Tab.Screen name="Expenses" component={ChartsScreen} />
     </Tab.Navigator>
   );
 }
