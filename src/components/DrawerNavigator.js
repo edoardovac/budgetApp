@@ -1,5 +1,6 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import HomeScreen from "./HomeScreen";
+//import HomeScreen from "./HomeScreen";
+import HomeStackNavigator from "./HomeStackNavigator";
 import SettingScreen from "./SettingScreen";
 import ChartsScreen from "./ChartsScreen";
 import MapsScreen from "./MapsScreen";
@@ -18,7 +19,7 @@ export default function drawerNavigator() {
     >
       <Drawer.Screen
         name="Home Screen (DRAWER)"
-        component={HomeScreen}
+        component={HomeStackNavigator}
         // icon not showing for some reason
         /*options={{
           title: "Home (DRAWER)",

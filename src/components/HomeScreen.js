@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, FlatList } from "react-native";
+import { View, Text, StyleSheet, FlatList, Button } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
 import { useEffect, useState } from "react";
@@ -14,7 +14,7 @@ import {
 
 const db = SQLite.openDatabase("budgetdb.db");
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }) {
   const [expensesMonth, setExpensesMonth] = useState([]);
   const [expensesSum, setExpensesSum] = useState(0);
   const [incomesMonth, setIncomesMonth] = useState([]);
@@ -72,6 +72,23 @@ export default function HomeScreen() {
           )}
         />
         <Text>---</Text>
+        <Button
+          title="Expenses"
+          onPress={() =>
+            navigation.navigate("Expenses", {
+              db: db,
+            })
+          }
+        />
+        <Text>---</Text>
+        <Button
+          title="Incomes"
+          onPress={() =>
+            navigation.navigate("Incomes", {
+              db: db,
+            })
+          }
+        />
       </View>
       <StatusBar />
     </View>
