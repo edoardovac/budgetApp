@@ -2,6 +2,7 @@ import {
   selectAllIncomeQuery,
   selectIncomesByMonthQuery,
   selectIncomeSumByMonthQuery,
+  selectIncomeSumFixedQuery,
 } from "../../queries/selectQueries/selectIncomeQueries";
 import {
   currentDateStart,
@@ -54,5 +55,22 @@ export const selectIncomeSumByMonth = (db, setIncomesSum) => {
     (error) =>
       console.error("Error when selecting SUM of monthly Incomes: ", error),
     () => console.log("SUM of Monthly incomes selected successfully")
+  );
+};
+
+export const selectIncomesSumFixed = (db, setIncomesSumFixed) => {
+  db.transaction(
+    (tx) => {
+      tx.executeSql(selectIncomeSumFixedQuery(), [], (_, { rows }) => {
+        const sum = rows.item(0)["SUM"];
+        setIncomesSumFixed(sum);
+      });
+    },
+    (error) =>
+      console.error(
+        "Error when selecting SUM of FIXED monthly Incomes: ",
+        error
+      ),
+    () => console.log("SUM of FIXED monthly incomes selected successfully")
   );
 };

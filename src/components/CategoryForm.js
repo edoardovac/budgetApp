@@ -1,12 +1,10 @@
 import { useState } from "react";
-import { View, StyleSheet, TextInput, Button } from "react-native";
+import { View, StyleSheet, TextInput, Button, Alert } from "react-native";
 import { insertCategory } from "../database/dbFunctions/insertDbFunctions/insertCategory";
 
-export default function CategoryForm({ db }) {
+export default function CategoryForm({ db, handleCloseForm }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-
-  const handleAdd = () => {};
 
   return (
     <View>
@@ -28,7 +26,25 @@ export default function CategoryForm({ db }) {
         title="ADD CATEGORY"
         onPress={() => {
           console.log("Pressed add category button ...");
-          insertCategory(name, description, db);
+          if (name.length > 0) {
+            Alert.alert("", `Do you want to add ${name} to the list?`, [
+              {
+                text: "Cancel",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              {
+                text: "ADD",
+                onPress: () => {
+                  insertCategory(name, description, db);
+                  Alert.alert("Success", `${name} was added to the list`);
+                  handleCloseForm();
+                },
+              },
+            ]);
+          } else {
+            Alert.alert("Error", "Name field is empty");
+          }
         }}
       />
     </View>

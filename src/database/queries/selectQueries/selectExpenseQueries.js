@@ -10,23 +10,29 @@ export const selectExpenseByTypeQuery = (type) => {
 };
 
 export const selectExpensesFixedQuery = () => {
-  return `SELECT expenseId, name, description, import, date, type, categoryId FROM Expense
-  WHERE fixed IS NOT NULL;`;
+  return `SELECT expenseId, name, description, import, date, type, fixed, categoryId FROM Expense
+  WHERE fixed = "YES";`;
 };
 
 export const selectExpensesNonFixedQuery = () => {
-  return `SELECT expenseId, name, description, import, date, type, categoryId FROM Expense
-  WHERE fixed IS NULL;`;
+  return `SELECT expenseId, name, description, import, date, type, fixed, categoryId FROM Expense
+  WHERE fixed = "NO";`;
 };
 
 export const selectExpensesByMonthQuery = (dateStart, dateStop) => {
   return `SELECT expenseId, name, description, import, date, type, fixed, categoryId FROM Expense
-  WHERE fixed IS NOT NULL OR (date >= '${dateStart}' AND date < '${dateStop}');`;
+  WHERE fixed = "YES" OR (date >= '${dateStart}' AND date < '${dateStop}')
+  ORDER BY date DESC;`;
 };
 
 export const selectExpenseSumMonthQuery = (dateStart, dateStop) => {
   return `SELECT SUM(import) AS 'SUM' FROM Expense
-    WHERE fixed IS NOT NULL OR (date >= '${dateStart}' AND date < '${dateStop}');`;
+    WHERE fixed = "YES" OR (date >= '${dateStart}' AND date < '${dateStop}');`;
+};
+
+export const selectExpenseSumFixedQuery = () => {
+  return `SELECT SUM(import) AS 'SUM' From Expense
+  WHERE fixed = "YES";`;
 };
 
 // need select by category

@@ -14,14 +14,15 @@ export const createExpenseTableQuery = () => {
     import REAL NOT NULL, 
     date TEXT NOT NULL, 
     type TEXT NOT NULL, 
-    fixed TEXT,
+    fixed TEXT NOT NULL,
     categoryId INTEGER NOT NULL, 
     FOREIGN KEY(categoryId) REFERENCES Category(categoryId), 
     CHECK (type = 'CASH' OR type = 'DEBIT CARD' OR type = 'CREDIT CARD' OR type = 'CHECK' OR type = 'WIRE TRANSFER' OR type = 'BANK TRANSFER'  OR type = 'CRYPTO' OR type = 'OTHER')
-    CHECK (fixed = "YES")
+    CHECK (fixed = "YES" OR fixed = "NO")
    );`;
 };
 
+// need change (fixed NOT NULL, CHECK (fixed = "YES" or fixed = "NO")
 export const createIncomeTableQuery = () => {
   return `CREATE TABLE IF NOT EXISTS Income (
     incomeId INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -30,10 +31,10 @@ export const createIncomeTableQuery = () => {
     import REAL NOT NULL, 
     date TEXT NOT NULL, 
     type TEXT NOT NULL, 
-    fixed TEXT,
+    fixed TEXT NOT NULL,
     categoryId INTEGER NOT NULL, 
     FOREIGN KEY(categoryId) REFERENCES Category(categoryId), 
     CHECK (type = 'CASH' OR type = 'DEBIT CARD' OR type = 'CREDIT CARD' OR type = 'CHECK' OR type = 'WIRE TRANSFER' OR type = 'BANK TRANSFER'  OR type = 'CRYPTO' OR type = 'OTHER'),
-    CHECK (fixed = "YES")
+    CHECK (fixed = "YES" OR fixed = "NO")
     );`;
 };

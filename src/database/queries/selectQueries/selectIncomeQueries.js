@@ -10,21 +10,27 @@ export const selectIncomeByTypeQuery = (type) => {
 };
 
 export const selectExpensesFixedQuery = () => {
-  return `SELECT incomeId, name, description, import, date, type, categoryId FROM Income
-  WHERE fixed IS NOT NULL;`;
+  return `SELECT incomeId, name, description, import, date, type, fixed, categoryId FROM Income
+  WHERE fixed = "YES";`;
 };
 
 export const selectExpensesNonFixedQuery = () => {
-  return `SELECT incomeId, name, description, import, date, type, categoryId FROM Income
-  WHERE fixed IS NULL;`;
+  return `SELECT incomeId, name, description, import, date, type, fixed, categoryId FROM Income
+  WHERE fixed = "NO";`;
 };
 
 export const selectIncomesByMonthQuery = (dateStart, dateStop) => {
   return `SELECT incomeId, name, description, import, date, type, fixed, categoryId FROM Income
-  WHERE fixed IS NOT NULL OR (date >= '${dateStart}' AND date < '${dateStop}');`;
+  WHERE fixed = "YES" OR (date >= '${dateStart}' AND date < '${dateStop}')
+  ORDER BY date DESC;`;
 };
 
 export const selectIncomeSumByMonthQuery = (dateStart, dateStop) => {
   return `SELECT SUM(import) AS 'SUM' FROM Income
-  WHERE fixed IS NOT NULL OR (date >= '${dateStart}' AND date < '${dateStop}');`;
+  WHERE fixed = "YES" OR (date >= '${dateStart}' AND date < '${dateStop}');`;
+};
+
+export const selectIncomeSumFixedQuery = () => {
+  return `SELECT SUM(import) AS 'SUM' From Income
+  WHERE fixed = "YES";`;
 };

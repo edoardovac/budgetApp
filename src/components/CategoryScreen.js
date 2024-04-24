@@ -1,10 +1,21 @@
-import { View, Text, StyleSheet, Button, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  FlatList,
+  Alert,
+  ActivityIndicator,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
 import { useEffect } from "react";
 import { useState } from "react";
 import CategoryForm from "./CategoryForm";
+import { ListItem } from "@rneui/themed";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { deleteCategoryById } from "../database/dbFunctions/deleteDbfunctions/deleteCategory";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
@@ -30,40 +41,56 @@ export default function CategoryScreen() {
     fetchCategories();
   };
 
+  const renderItem = ({ item }) => (
+    <TouchableOpacity>
+      <ListItem
+        bottomDivider
+        onPress={() => {
+          console.log(item.name);
+          Alert.alert(`Delete ${item.name}?`, `Are you sure?`, [
+            {
+              text: "Cancel",
+              onPress: () => console.log("Cancel pressed"),
+              style: "cancel",
+            },
+            {
+              text: "DELETE",
+              onPress: () => {
+                console.log("DELETE PRESSED");
+                deleteCategoryById(db, item.categoryId);
+                fetchCategories();
+              },
+            },
+          ]);
+        }}
+      >
+        <ListItem.Content>
+          <ListItem.Title>{item.name}</ListItem.Title>
+          <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
+        </ListItem.Content>
+      </ListItem>
+    </TouchableOpacity>
+  );
+
   if (open === true) {
     return (
       <View>
-        <Text>Totally not a placeholder text</Text>
-        <CategoryForm db={db} />
+        <Text>ADD A CATEGORY</Text>
+        <CategoryForm db={db} handleCloseForm={handleCloseForm} />
         <Text>---</Text>
-        <Button title="CANCEL" onPress={() => handleCloseForm()} />
+        <Button title="CANCEL" onPress={handleCloseForm} />
       </View>
     );
   } else {
     return (
       <View style={styles.container}>
-        <Text>---</Text>
-        <View>
-          <FlatList
-            data={categories}
-            renderItem={({ item }) => (
-              <View>
-                <Text>
-                  {item.categoryId} - {item.name}
-                </Text>
-                <Text>{item.description}</Text>
-              </View>
-            )}
-            keyExtractor={(item) => item.categoryId.toString()}
-          />
-        </View>
-        <Text>---</Text>
-        <Button
-          title="New Category"
-          onPress={() => {
-            handleOpenForm();
-          }}
+        <FlatList
+          data={categories}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.categoryId.toString()}
         />
+        <Button title="New Category" onPress={handleOpenForm} />
+
         <StatusBar />
       </View>
     );

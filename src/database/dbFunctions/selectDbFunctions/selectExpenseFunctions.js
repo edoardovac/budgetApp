@@ -5,6 +5,7 @@ import {
 import {
   selectAllExpenseQuery,
   selectExpensesByMonthQuery,
+  selectExpenseSumFixedQuery,
   selectExpenseSumMonthQuery,
 } from "../../queries/selectQueries/selectExpenseQueries";
 
@@ -54,5 +55,22 @@ export const selectExpenseSumByMonth = (db, setExpensesSum) => {
     (error) =>
       console.error("Error when selecting SUM of monthly Expenses: ", error),
     () => console.log("SUM of Monthly expenses selected successfully")
+  );
+};
+
+export const selectExpenseSumFixed = (db, setExpensesSumFixed) => {
+  db.transaction(
+    (tx) => {
+      tx.executeSql(selectExpenseSumFixedQuery(), [], (_, { rows }) => {
+        const sum = rows.item(0)["SUM"];
+        setExpensesSumFixed(sum);
+      });
+    },
+    (error) =>
+      console.error(
+        "Error when selecting SUM of FIXED monthly Expenses: ",
+        error
+      ),
+    () => console.log("SUM of FIXED monthly expenses selected successfully")
   );
 };

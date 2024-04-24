@@ -13,3 +13,19 @@ export function currentDateStop() {
   const currentYearNextMonth = `${currentYear}-${nextMonth}-01`;
   return currentYearNextMonth;
 }
+
+export function givenDateStart(date) {
+  const givenDate = new Date(date);
+  const givenYear = givenDate.getFullYear().toString();
+  const givenMonth = (givenDate.getMonth() + 1).toString().padStart(2, "0");
+  const givenYearMonth = `${givenYear}-${givenMonth}-01`;
+  return givenYearMonth;
+}
+
+export function givenDateStop(date) {
+  const givenDate = new Date(date);
+  const givenYear = givenDate.getFullYear().toString();
+  const givenMonth = (givenDate.getMonth() + 2).toString().padStart(2, "0");
+  const givenYearNextMonth = `${givenYear}-${givenMonth}-01`;
+  return givenYearNextMonth;
+}
