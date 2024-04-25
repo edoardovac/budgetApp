@@ -1,7 +1,7 @@
-import { View, Text, StyleSheet, FlatList, Button } from "react-native";
+import { View, Text, StyleSheet, Button } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { createAllTables } from "../database/dbFunctions/createDbFunctions";
 import {
   selectAllExpenseMonth,
@@ -11,6 +11,7 @@ import {
   selectAllIncomeByMonth,
   selectIncomeSumByMonth,
 } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
+import { useFocusEffect } from "@react-navigation/native";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
@@ -20,12 +21,18 @@ export default function HomeScreen({ navigation }) {
   const [incomesMonth, setIncomesMonth] = useState([]);
   const [incomesSum, setIncomesSum] = useState(0);
   const [netBalance, setNetBalance] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     createAllTables(db);
-    fetchExpenseSumByMonth();
-    fetchIncomeSumByMonth();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchExpenseSumByMonth();
+      fetchIncomeSumByMonth();
+    }, [])
+  );
 
   useEffect(() => {
     setNetBalance(incomesSum - expensesSum);
@@ -76,8 +83,6 @@ export default function HomeScreen({ navigation }) {
             })
           }
         />
-        <Text>---</Text>
-        <Button title="Refresh" onPress={fetchAllSumByMonth} />
       </View>
       <StatusBar />
     </View>

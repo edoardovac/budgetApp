@@ -2,12 +2,13 @@ import { View, Text, StyleSheet, Button, FlatList, Alert } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useState } from "react";
 import CategoryForm from "./CategoryForm";
 import { ListItem } from "@rneui/themed";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { deleteCategoryById } from "../database/dbFunctions/deleteDbfunctions/deleteCategory";
+import { useFocusEffect } from "@react-navigation/native";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
@@ -18,6 +19,12 @@ export default function CategoryScreen() {
   useEffect(() => {
     fetchCategories();
   }, []);
+
+  useFocusEffect(
+    useCallback(() => {
+      setOpen(false);
+    }, [])
+  );
 
   const fetchCategories = () => {
     console.log("Fetching Categories...");

@@ -22,7 +22,7 @@ export const selectExpensesNonFixedQuery = () => {
 export const selectIncomesByMonthQuery = (dateStart, dateStop) => {
   return `SELECT incomeId, name, description, import, date, type, fixed, categoryId FROM Income
   WHERE fixed = "YES" OR (date >= '${dateStart}' AND date < '${dateStop}')
-  ORDER BY date DESC;`;
+  ORDER BY date DESC, incomeId DESC;`;
 };
 
 export const selectIncomeSumByMonthQuery = (dateStart, dateStop) => {

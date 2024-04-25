@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, FlatList, Alert, Button } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   selectAllExpenseMonth,
   selectExpenseSumByMonth,
   selectExpenseSumFixed,
 } from "../database/dbFunctions/selectDbFunctions/selectExpenseFunctions";
+import { useFocusEffect } from "@react-navigation/native";
 import { ListItem } from "@rneui/themed";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { formatDate } from "./formatDate";
@@ -19,9 +20,11 @@ export default function Expenses({ route, navigation }) {
   const [expensesSumFixed, setExpensesSumFixed] = useState(0);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    fetchExpensesAndSum();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchExpensesAndSum();
+    }, [])
+  );
 
   const fetchExpensesAndSum = () => {
     selectAllExpenseMonth(db, setExpensesMonth);

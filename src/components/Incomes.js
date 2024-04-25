@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, FlatList, Alert, Button } from "react-native";
-import { useState, useEffect } from "react";
+import { useCallback, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import {
   selectAllIncomeByMonth,
@@ -19,9 +20,11 @@ export default function Incomes({ route, navigation }) {
   const [incomesSumFixed, setIncomesSumFixed] = useState(0);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    fetchIncomesAndSum();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      fetchIncomesAndSum();
+    }, [])
+  );
 
   const fetchIncomesAndSum = () => {
     selectAllIncomeByMonth(db, setIncomesMonth);
@@ -90,6 +93,7 @@ export default function Incomes({ route, navigation }) {
     return (
       <View style={styles.container}>
         <Text>TOTAL INCOMES THIS MONTH: {incomesSum.toFixed(2)} €</Text>
+        <Text> FIXED INCOMES: {incomesSumFixed.toFixed(2)} €</Text>
         <Text>---</Text>
         <FlatList
           data={incomesMonth}
