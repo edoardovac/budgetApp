@@ -48,7 +48,11 @@ export const selectExpenseSumByMonth = (db, setExpensesSum) => {
         [],
         (_, { rows }) => {
           const sum = rows.item(0)["SUM"];
-          setExpensesSum(sum);
+          if (!sum) {
+            setExpensesSum(0);
+          } else {
+            setExpensesSum(sum);
+          }
         }
       );
     },
@@ -63,7 +67,11 @@ export const selectExpenseSumFixed = (db, setExpensesSumFixed) => {
     (tx) => {
       tx.executeSql(selectExpenseSumFixedQuery(), [], (_, { rows }) => {
         const sum = rows.item(0)["SUM"];
-        setExpensesSumFixed(sum);
+        if (!sum) {
+          setExpensesSumFixed(0);
+        } else {
+          setExpensesSumFixed(sum);
+        }
       });
     },
     (error) =>
