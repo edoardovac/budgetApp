@@ -43,160 +43,160 @@ export default function IncomeForm({ db, handleCloseForm }) {
 
   const showDatepicker = () => {
     showMode("date");
-
-    return (
-      <ScrollView contentContainerStyle={styles.container}>
-        <TextInput
-          style={styles.input}
-          onChangeText={setName}
-          value={name}
-          placeholder="Income Name"
-          maxLength={50}
-        />
-        <TextInput
-          style={styles.input}
-          onChangeText={setDescription}
-          value={description}
-          placeholder="Income Description"
-          maxLength={255}
-        />
-        <TextInput
-          style={styles.input}
-          onChangeText={setGivenImport}
-          value={givenImport}
-          placeholder="Income Import (€)"
-          maxLength={255}
-          keyboardType="numeric"
-        />
-        <View style={styles.dateContainer}>
-          <Button onPress={showDatepicker} title="Choose date: " />
-          <TextInput
-            style={styles.dateInput}
-            value={date.toLocaleDateString()}
-            placeholder="Date"
-            editable={false}
-          />
-        </View>
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={date}
-            mode={mode}
-            is24Hour={true}
-            onChange={onChange}
-          />
-        )}
-        <Picker
-          selectedValue={type}
-          onValueChange={(itemValue, itemIndex) => setType(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Select Type" value="" />
-          <Picker.Item label="CASH" value="CASH" />
-          <Picker.Item label="DEBIT CARD" value="DEBIT CARD" />
-          <Picker.Item label="CREDIT CARD" value="CREDIT CARD" />
-          <Picker.Item label="CHECK" value="CHECK" />
-          <Picker.Item label="WIRE TRANSFER" value="WIRE TRANSFER" />
-          <Picker.Item label="BANK TRANSFER" value="BANK TRANSFER" />
-          <Picker.Item label="CRYPTO" value="CRYPTO" />
-          <Picker.Item label="OTHER" value="OTHER" />
-        </Picker>
-        <Picker
-          selectedValue={fixed}
-          onValueChange={(itemValue, itemIndex) => setFixed(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Is it a fixed monthly Income?" value="" />
-          <Picker.Item label="YES" value="YES" />
-          <Picker.Item label="NO" value="NO" />
-        </Picker>
-        <Picker
-          selectedValue={categoryId}
-          onValueChange={(itemValue, itemIndex) => setCategoryId(itemValue)}
-          style={styles.picker}
-        >
-          <Picker.Item label="Select Category" value="" />
-          {categories.map((category) => (
-            <Picker.Item
-              key={category.categoryId}
-              label={category.name}
-              value={category.categoryId}
-            />
-          ))}
-        </Picker>
-        <View style={styles.buttonContainer}>
-          <Button
-            title="ADD INCOME"
-            onPress={() => {
-              console.log("Pressed add income button...");
-              if (name.length == 0) {
-                Alert.alert(
-                  "Name field is empty",
-                  "Please complete the Name field"
-                );
-              } else if (givenImport.length == 0) {
-                Alert.alert(
-                  "Import field is empty",
-                  "Please complete the Import field"
-                );
-              } else if (type.length == 0) {
-                Alert.alert(
-                  "Type field is empty",
-                  "Please pick a Type for your income"
-                );
-              } else if (fixed.length == 0) {
-                Alert.alert(
-                  "Fixed field is empty",
-                  "Please select if your income is recurring monthly or not"
-                );
-              } else if (categoryId.length == 0) {
-                Alert.alert(
-                  "Category field is empty",
-                  "Please pick a Category for your income"
-                );
-              } else {
-                Alert.alert(
-                  "",
-                  `Do you want to add the income ${name} ${parseFloat(
-                    givenImport
-                  ).toFixed(2)} €, on ${formatDate(
-                    date
-                  )}, in the ${categoryId} category?`,
-                  [
-                    {
-                      text: "Cancel",
-                      onPress: () => console.log("Cancel Pressed"),
-                      style: "cancel",
-                    },
-                    {
-                      text: "ADD",
-                      onPress: () => {
-                        console.log("ADD");
-                        insertIncome(
-                          db,
-                          name,
-                          description,
-                          givenImport,
-                          date,
-                          type,
-                          fixed,
-                          categoryId
-                        );
-                        Alert.alert("Success", `${name} was added to the list`);
-                        handleCloseForm();
-                      },
-                    },
-                  ]
-                );
-              }
-            }}
-          />
-          <Text>---</Text>
-          <Button title="CANCEL" onPress={handleCloseForm} />
-        </View>
-      </ScrollView>
-    );
   };
+
+  return (
+    <ScrollView contentContainerStyle={styles.container}>
+      <TextInput
+        style={styles.input}
+        onChangeText={setName}
+        value={name}
+        placeholder="Income Name"
+        maxLength={50}
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={setDescription}
+        value={description}
+        placeholder="Income Description"
+        maxLength={255}
+      />
+      <TextInput
+        style={styles.input}
+        onChangeText={setGivenImport}
+        value={givenImport}
+        placeholder="Income Import (€)"
+        maxLength={255}
+        keyboardType="numeric"
+      />
+      <View style={styles.dateContainer}>
+        <Button onPress={showDatepicker} title="Choose date: " />
+        <TextInput
+          style={styles.dateInput}
+          value={date.toLocaleDateString()}
+          placeholder="Date"
+          editable={false}
+        />
+      </View>
+      {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode={mode}
+          is24Hour={true}
+          onChange={onChange}
+        />
+      )}
+      <Picker
+        selectedValue={type}
+        onValueChange={(itemValue, itemIndex) => setType(itemValue)}
+        style={styles.picker}
+      >
+        <Picker.Item label="Select Type" value="" />
+        <Picker.Item label="CASH" value="CASH" />
+        <Picker.Item label="DEBIT CARD" value="DEBIT CARD" />
+        <Picker.Item label="CREDIT CARD" value="CREDIT CARD" />
+        <Picker.Item label="CHECK" value="CHECK" />
+        <Picker.Item label="WIRE TRANSFER" value="WIRE TRANSFER" />
+        <Picker.Item label="BANK TRANSFER" value="BANK TRANSFER" />
+        <Picker.Item label="CRYPTO" value="CRYPTO" />
+        <Picker.Item label="OTHER" value="OTHER" />
+      </Picker>
+      <Picker
+        selectedValue={fixed}
+        onValueChange={(itemValue, itemIndex) => setFixed(itemValue)}
+        style={styles.picker}
+      >
+        <Picker.Item label="Is it a fixed monthly Income?" value="" />
+        <Picker.Item label="YES" value="YES" />
+        <Picker.Item label="NO" value="NO" />
+      </Picker>
+      <Picker
+        selectedValue={categoryId}
+        onValueChange={(itemValue, itemIndex) => setCategoryId(itemValue)}
+        style={styles.picker}
+      >
+        <Picker.Item label="Select Category" value="" />
+        {categories.map((category) => (
+          <Picker.Item
+            key={category.categoryId}
+            label={category.name}
+            value={category.categoryId}
+          />
+        ))}
+      </Picker>
+      <View style={styles.buttonContainer}>
+        <Button
+          title="ADD INCOME"
+          onPress={() => {
+            console.log("Pressed add income button...");
+            if (name.length == 0) {
+              Alert.alert(
+                "Name field is empty",
+                "Please complete the Name field"
+              );
+            } else if (givenImport.length == 0) {
+              Alert.alert(
+                "Import field is empty",
+                "Please complete the Import field"
+              );
+            } else if (type.length == 0) {
+              Alert.alert(
+                "Type field is empty",
+                "Please pick a Type for your income"
+              );
+            } else if (fixed.length == 0) {
+              Alert.alert(
+                "Fixed field is empty",
+                "Please select if your income is recurring monthly or not"
+              );
+            } else if (categoryId.length == 0) {
+              Alert.alert(
+                "Category field is empty",
+                "Please pick a Category for your income"
+              );
+            } else {
+              Alert.alert(
+                "",
+                `Do you want to add the income ${name} ${parseFloat(
+                  givenImport
+                ).toFixed(2)} €, on ${formatDate(
+                  date
+                )}, in the ${categoryId} category?`,
+                [
+                  {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  {
+                    text: "ADD",
+                    onPress: () => {
+                      console.log("ADD");
+                      insertIncome(
+                        db,
+                        name,
+                        description,
+                        givenImport,
+                        date,
+                        type,
+                        fixed,
+                        categoryId
+                      );
+                      Alert.alert("Success", `${name} was added to the list`);
+                      handleCloseForm();
+                    },
+                  },
+                ]
+              );
+            }
+          }}
+        />
+        <Text>---</Text>
+        <Button title="CANCEL" onPress={handleCloseForm} />
+      </View>
+    </ScrollView>
+  );
 }
 
 const styles = StyleSheet.create({

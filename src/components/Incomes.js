@@ -43,7 +43,7 @@ export default function Incomes({ route, navigation }) {
       <ListItem
         bottomDivider
         onPress={() => {
-          console.log(item.name);
+          console.log(`${item.name}, id: ${item.incomeId}`);
           Alert.alert(
             `Delete ${item.name}?`,
             `Delete income ${item.name}, ${item.import.toFixed(

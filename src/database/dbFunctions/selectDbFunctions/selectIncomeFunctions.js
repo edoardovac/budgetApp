@@ -38,9 +38,7 @@ export const selectAllIncomeByMonth = (db, setIncomesMonth) => {
 
 export const selectIncomeSumByMonth = (db, setIncomesSum) => {
   const dateStart = currentDateStart();
-  console.log(dateStart);
   const dateStop = currentDateStop();
-  console.log(dateStop);
   db.transaction(
     (tx) => {
       tx.executeSql(

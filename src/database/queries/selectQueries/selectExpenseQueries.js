@@ -35,5 +35,10 @@ export const selectExpenseSumFixedQuery = () => {
   WHERE fixed = "YES";`;
 };
 
+export const selectExpenseSumByCategoryI = (categoryId) => {
+  return `SELECT SUM(import) AS 'SUUM' FROM Expense
+  WHERE categoryId = ?`;
+};
+
 // need select by category
 // need select by date (month, week, day, year?)

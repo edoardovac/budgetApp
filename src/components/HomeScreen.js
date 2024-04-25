@@ -23,15 +23,26 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     createAllTables(db);
-    selectAllExpenseMonth(db, setExpensesMonth);
-    selectExpenseSumByMonth(db, setExpensesSum);
-    selectAllIncomeByMonth(db, setIncomesMonth);
-    selectIncomeSumByMonth(db, setIncomesSum);
+    fetchExpenseSumByMonth();
+    fetchIncomeSumByMonth();
   }, []);
 
   useEffect(() => {
     setNetBalance(incomesSum - expensesSum);
   }, [incomesSum, expensesSum]);
+
+  const fetchExpenseSumByMonth = () => {
+    selectExpenseSumByMonth(db, setExpensesSum);
+  };
+
+  const fetchIncomeSumByMonth = () => {
+    selectIncomeSumByMonth(db, setIncomesSum);
+  };
+
+  const fetchAllSumByMonth = () => {
+    selectExpenseSumByMonth(db, setExpensesSum);
+    selectIncomeSumByMonth(db, setIncomesSum);
+  };
 
   return (
     <View style={styles.container}>
@@ -41,36 +52,12 @@ export default function HomeScreen({ navigation }) {
       </View>
       <View>
         <Text>EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €</Text>
-        <FlatList
-          data={expensesMonth}
-          renderItem={({ item }) => (
-            <View>
-              <Text>
-                {item.expenseId} - {item.name} - {item.import.toFixed(2)} € -
-                date: {item.date} Fixed?{item.fixed}
-              </Text>
-            </View>
-          )}
-          keyExtractor={(item) => item.expenseId.toString()}
-        />
       </View>
       <View>
         <Text>---</Text>
       </View>
       <View>
         <Text>INCOME THIS MONTH: {incomesSum.toFixed(2)} €</Text>
-        <FlatList
-          data={incomesMonth}
-          renderItem={({ item }) => (
-            <View>
-              <Text>
-                {item.incomeId} - {item.name} - {item.import.toFixed(2)} € -
-                date:
-                {item.date} {item.fixed}
-              </Text>
-            </View>
-          )}
-        />
         <Text>---</Text>
         <Button
           title="Expenses"
@@ -89,6 +76,8 @@ export default function HomeScreen({ navigation }) {
             })
           }
         />
+        <Text>---</Text>
+        <Button title="Refresh" onPress={fetchAllSumByMonth} />
       </View>
       <StatusBar />
     </View>

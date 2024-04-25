@@ -1,4 +1,5 @@
 import { insertIncomeQuery } from "../../queries/insertQueries/insertIncomeQueries";
+import { formatDateReverse } from "../../../components/formatDate";
 
 insertIncomeQuery;
 
