@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, FlatList, Alert, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Alert,
+  Button,
+  Switch,
+} from "react-native";
 import { useState, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -12,13 +20,18 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { formatDate } from "./formatDate";
 import { deleteExpenseById } from "../database/dbFunctions/deleteDbfunctions/deleteExpense";
 import ExpenseForm from "./ExpenseForm";
+import SearchBar from "./SearchBar";
+import SearchExpenseForm from "./SearchExpenseForm";
 
 export default function Expenses({ route, navigation }) {
   const { db } = route.params;
   const [expensesMonth, setExpensesMonth] = useState([]);
   const [expensesSum, setExpensesSum] = useState(0);
   const [expensesSumFixed, setExpensesSumFixed] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [openExpenseForm, setOpenExpenseForm] = useState(false);
+  const [openSeachForm, setOpenSeachForm] = useState(false);
+  const [text, setText] = useState("");
+  const [fixedFilter, setFixedFilter] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
@@ -32,13 +45,34 @@ export default function Expenses({ route, navigation }) {
     selectExpenseSumFixed(db, setExpensesSumFixed);
   };
 
-  const handleOpenForm = () => {
-    setOpen(true);
+  const handleOpenExpenseForm = () => {
+    setOpenExpenseForm(true);
   };
 
-  const handleCloseForm = () => {
-    setOpen(false);
+  const handleCloseExpenseForm = () => {
+    setOpenExpenseForm(false);
     fetchExpensesAndSum();
+  };
+
+  const handleOpenSearchForm = () => {
+    setOpenSeachForm(true);
+  };
+
+  const handleCloseSearchForm = () => {
+    setOpenSeachForm(false);
+  };
+
+  const searchedExpenses = expensesMonth.filter((expenses) => {
+    const search = expenses.name.toLowerCase().includes(text.toLowerCase());
+    if (fixedFilter) {
+      return search && expenses.fixed.includes("YES");
+    } else {
+      return search;
+    }
+  });
+
+  const switchFixedFilter = () => {
+    setFixedFilter(!fixedFilter);
   };
 
   const renderItem = ({ item }) => (
@@ -82,12 +116,12 @@ export default function Expenses({ route, navigation }) {
     </TouchableOpacity>
   );
 
-  if (open === true) {
+  if (openExpenseForm === true) {
+    return <ExpenseForm db={db} handleCloseForm={handleCloseExpenseForm} />;
+  }
+  if (openSeachForm) {
     return (
-      <View>
-        <Text>ADD AN EXPENSE</Text>
-        <ExpenseForm db={db} handleCloseForm={handleCloseForm} />
-      </View>
+      <SearchExpenseForm db={db} handleCloseForm={handleCloseSearchForm} />
     );
   }
   return (
@@ -95,11 +129,30 @@ export default function Expenses({ route, navigation }) {
       <Text>TOTAL EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €</Text>
       <Text> FIXED EXPENSES: {expensesSumFixed.toFixed(2)} €</Text>
       <FlatList
-        data={expensesMonth}
+        data={searchedExpenses}
         renderItem={renderItem}
         keyExtractor={(item) => item.expenseId.toString()}
+        ListHeaderComponent={
+          <View style={styles.filterContainer}>
+            <SearchBar
+              text={text}
+              setText={setText}
+              placeholder={"Search this month..."}
+              style={{ flex: 1 }}
+            />
+            <View style={styles.switchContainer}>
+              <Text>Fixed?</Text>
+              <Switch
+                value={fixedFilter}
+                onValueChange={switchFixedFilter}
+                style={styles.switch}
+              />
+            </View>
+          </View>
+        }
       />
-      <Button title="New Expense" onPress={handleOpenForm} />
+      <Button title="Search all" onPress={handleOpenSearchForm} />
+      <Button title="New Expense" onPress={handleOpenExpenseForm} />
       <StatusBar />
     </View>
   );
@@ -109,5 +162,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "yellow",
+  },
+  filterContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  switchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  switch: {
+    marginLeft: 10,
   },
 });

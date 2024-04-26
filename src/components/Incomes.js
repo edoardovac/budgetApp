@@ -12,6 +12,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { ListItem } from "@rneui/themed";
 import { formatDate } from "./formatDate";
 import IncomeForm from "./IncomeForm";
+import SearchBar from "./SearchBar";
 
 export default function Incomes({ route, navigation }) {
   const { db } = route.params;
@@ -19,6 +20,7 @@ export default function Incomes({ route, navigation }) {
   const [incomesSum, setIncomesSum] = useState(0);
   const [incomesSumFixed, setIncomesSumFixed] = useState(0);
   const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
 
   useFocusEffect(
     useCallback(() => {
@@ -40,6 +42,10 @@ export default function Incomes({ route, navigation }) {
     setOpen(false);
     fetchIncomesAndSum();
   };
+
+  const searchedIncomes = incomesMonth.filter((income) => {
+    return income.name.toLowerCase().includes(text.toLowerCase());
+  });
 
   const renderItem = ({ item }) => (
     <TouchableOpacity>
@@ -96,9 +102,16 @@ export default function Incomes({ route, navigation }) {
         <Text> FIXED INCOMES: {incomesSumFixed.toFixed(2)} €</Text>
         <Text>---</Text>
         <FlatList
-          data={incomesMonth}
+          data={searchedIncomes}
           renderItem={renderItem}
           keyExtractor={(item) => item.incomeId.toString()}
+          ListHeaderComponent={
+            <SearchBar
+              text={text}
+              setText={setText}
+              placeholder={"Search this month..."}
+            />
+          }
         />
         <Button title="New Income" onPress={handleOpenForm} />
         <StatusBar />

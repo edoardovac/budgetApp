@@ -1,5 +1,6 @@
 export const selectAllExpenseQuery = () => {
-  return `SELECT expenseId, name, description, import, date, type, fixed, categoryId FROM Expense;`;
+  return `SELECT expenseId, name, description, import, date, type, fixed, categoryId FROM Expense
+  ORDER BY date DESC, expenseId DESC;`;
 };
 
 // allowed values: 'CASH','DEBIT CARD','CREDIT CARD','CHECK',

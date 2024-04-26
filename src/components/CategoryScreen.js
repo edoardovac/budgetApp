@@ -9,12 +9,14 @@ import { ListItem } from "@rneui/themed";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { deleteCategoryById } from "../database/dbFunctions/deleteDbfunctions/deleteCategory";
 import { useFocusEffect } from "@react-navigation/native";
+import SearchBar from "./SearchBar";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
 export default function CategoryScreen() {
   const [categories, setCategories] = useState([]);
   const [open, setOpen] = useState(false);
+  const [text, setText] = useState("");
 
   useEffect(() => {
     fetchCategories();
@@ -22,6 +24,7 @@ export default function CategoryScreen() {
 
   useFocusEffect(
     useCallback(() => {
+      fetchCategories();
       setOpen(false);
     }, [])
   );
@@ -39,6 +42,10 @@ export default function CategoryScreen() {
     setOpen(false);
     fetchCategories();
   };
+
+  const searchedCategories = categories.filter((category) => {
+    return category.name.toLowerCase().includes(text.toLowerCase());
+  });
 
   const renderItem = ({ item }) => (
     <TouchableOpacity>
@@ -84,12 +91,12 @@ export default function CategoryScreen() {
     return (
       <View style={styles.container}>
         <FlatList
-          data={categories}
+          data={searchedCategories}
           renderItem={renderItem}
           keyExtractor={(item) => item.categoryId.toString()}
+          ListHeaderComponent={<SearchBar text={text} setText={setText} />}
         />
         <Button title="New Category" onPress={handleOpenForm} />
-
         <StatusBar />
       </View>
     );

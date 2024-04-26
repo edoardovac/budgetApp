@@ -15,3 +15,27 @@ export const formatDateReverse = (givenDate) => {
   const formattedDate = `${year}-${month}-${day}`;
   return formattedDate;
 };
+
+export const formatDateStringDDMMYYYY = (givenString) => {
+  const [day, month, year] = givenString.toString().split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  return date;
+};
+
+export const formatDateStringYYYYMMDD = (givenString) => {
+  const [year, month, day] = givenString.toString().split("-").map(Number);
+  const date = new Date(year, month - 1, day + 1);
+  return date;
+};
+
+export const formatDateStringDDMMYYYYReverse = (givenString) => {
+  const [day, month, year] = givenString.toString().split("-").map(Number);
+  const date = new Date(year, month - 1, day + 1);
+  return date;
+};
+
+export const formatDateStringYYYYMMDDReverse = (givenString) => {
+  const [year, month, day] = givenString.toString().split("-").map(Number);
+  const date = new Date(year, month - 1, day + 1);
+  return date;
+};

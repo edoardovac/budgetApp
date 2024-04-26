@@ -1,5 +1,6 @@
 export const selectAllIncomeQuery = () => {
-  return `SELECT incomeId, name, description, import, date, type, fixed, categroyId FROM Income;`;
+  return `SELECT incomeId, name, description, import, date, type, fixed, categroyId FROM Income
+  ORDER BY date DESC, incomeId DESC;`;
 };
 
 // allowed values: 'CASH','DEBIT CARD','CREDIT CARD','CHECK',

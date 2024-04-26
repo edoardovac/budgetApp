@@ -9,10 +9,12 @@ import {
   currentDateStop,
 } from "../../../components/currentDate";
 
-export const selectAllIncome = (db) => {
+export const selectAllIncome = (db, setIncomes) => {
   db.transaction(
     (tx) => {
-      tx.executeSql(selectAllIncomeQuery());
+      tx.executeSql(selectAllIncomeQuery(), [], (_, { rows }) =>
+        setIncomes(rows._array)
+      );
     },
     (error) =>
       console.error("Error when selecting all in Income table: ", error),

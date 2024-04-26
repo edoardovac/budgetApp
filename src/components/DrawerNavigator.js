@@ -3,7 +3,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import HomeStackNavigator from "./HomeStackNavigator";
 import SettingScreen from "./SettingScreen";
 import ChartsScreen from "./ChartsScreen";
-import MapsScreen from "./MapsScreen";
+import CalendarScreen from "./CalendarScreen";
 import CategoryScreen from "./CategoryScreen";
 
 export default function drawerNavigator() {
@@ -28,9 +28,9 @@ export default function drawerNavigator() {
           },
         }}*/
       />
-      <Drawer.Screen name="Charts (DRAWER)" component={ChartsScreen} />
       <Drawer.Screen name="Category (DRAWER)" component={CategoryScreen} />
-      <Drawer.Screen name="Maps (DRAWER)" component={MapsScreen} />
+      <Drawer.Screen name="Charts (DRAWER)" component={ChartsScreen} />
+      <Drawer.Screen name="Calendar (DRAWER)" component={CalendarScreen} />
       <Drawer.Screen name="Settings (DRAWER)" component={SettingScreen} />
     </Drawer.Navigator>
   );
