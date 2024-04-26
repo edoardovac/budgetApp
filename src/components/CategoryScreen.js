@@ -94,7 +94,15 @@ export default function CategoryScreen() {
           data={searchedCategories}
           renderItem={renderItem}
           keyExtractor={(item) => item.categoryId.toString()}
-          ListHeaderComponent={<SearchBar text={text} setText={setText} />}
+          ListHeaderComponent={
+            <View style={{ marginTop: 8, marginLeft: 8 }}>
+              <SearchBar
+                text={text}
+                setText={setText}
+                placeholder={"Search categories..."}
+              />
+            </View>
+          }
         />
         <Button title="New Category" onPress={handleOpenForm} />
         <StatusBar />
