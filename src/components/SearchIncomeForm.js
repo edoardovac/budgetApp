@@ -3,17 +3,16 @@ import { Button } from "@rneui/themed";
 import { FlatList, StyleSheet, View, TextInput, Alert } from "react-native";
 import { ListItem } from "@rneui/themed";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { selectAllExpense } from "../database/dbFunctions/selectDbFunctions/selectExpenseFunctions";
+import { selectAllIncome } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
 import SearchBar from "./SearchBar";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
-import { formatDate, formatDateReverse } from "./formatDate";
-import { selectAllIncome } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
+import { formatDate, formatDateStringYYYYMMDD } from "./formatDate";
 import { deleteIncomeById } from "../database/dbFunctions/deleteDbfunctions/deleteIncome";
 
 export default function SearchIncomeForm({ db, handleCloseForm }) {
-  const [incomes, setincomes] = useState([]);
+  const [incomes, setIncomes] = useState([]);
   const [text, setText] = useState("");
   const [date, setDate] = useState(new Date());
   const [startDate, setStartDate] = useState("");
@@ -26,20 +25,23 @@ export default function SearchIncomeForm({ db, handleCloseForm }) {
   const [flag, setFlag] = useState();
 
   useEffect(() => {
-    selectAllIncome(db, setincomes);
+    fetchIncomes();
     selectAllCategory(db, setCategories);
   }, []);
+
+  const fetchIncomes = () => {
+    selectAllIncome(db, setIncomes);
+  };
 
   const searchedIncomes = incomes.filter((income) => {
     const nameMatch = income.name.toLowerCase().includes(text.toLowerCase());
     const dateMatch =
-      (!startDate || income.date >= new Date(startDate)) &&
-      (!endDate ||
-        new Date(
-          formatDateReverse(income.date) <= new Date(formatDateReverse(endDate))
-        ));
+      (!startDate ||
+        formatDateStringYYYYMMDD(income.date) >= new Date(startDate)) &&
+      (!endDate || formatDateStringYYYYMMDD(income.date) <= new Date(endDate));
     const typeMatch = !type || income.type === type;
     const categoryMatch = !categoryId || income.categoryId === categoryId;
+
     return nameMatch && dateMatch && typeMatch && categoryMatch;
   });
 
@@ -47,9 +49,9 @@ export default function SearchIncomeForm({ db, handleCloseForm }) {
     const currentDate = selectedDate;
     setShow(false);
     if (flag === "start") {
-      setStartDate(formatDate(currentDate));
+      setStartDate(currentDate);
     } else if (flag === "end") {
-      setEndDate(formatDate(currentDate));
+      setEndDate(currentDate);
     }
   };
 
@@ -68,6 +70,22 @@ export default function SearchIncomeForm({ db, handleCloseForm }) {
     setEndDate("");
     setType("");
     setCategoryId("");
+  };
+
+  const renderDateMessage = (origin) => {
+    if (origin === "startDateInput") {
+      if (!startDate) {
+        return "Start date";
+      } else {
+        return formatDate(startDate);
+      }
+    } else if (origin === "endDateInput") {
+      if (!endDate) {
+        return "End date";
+      } else {
+        return formatDate(setEndDate);
+      }
+    }
   };
 
   const renderItem = ({ item }) => (
@@ -92,7 +110,7 @@ export default function SearchIncomeForm({ db, handleCloseForm }) {
                 onPress: () => {
                   console.log("DELETE PRESSED");
                   deleteIncomeById(db, item.incomeId);
-                  fetchExpensesAndSum();
+                  fetchIncomes();
                 },
               },
             ]
@@ -124,8 +142,7 @@ export default function SearchIncomeForm({ db, handleCloseForm }) {
         />
         <TextInput
           style={styles.dateInput}
-          value={startDate.toString()}
-          placeholder="Start date"
+          value={renderDateMessage("startDateInput")}
           editable={false}
         />
       </View>
@@ -139,8 +156,7 @@ export default function SearchIncomeForm({ db, handleCloseForm }) {
         />
         <TextInput
           style={styles.dateInput}
-          value={endDate.toString()}
-          placeholder="End date"
+          value={renderDateMessage("endDateInput")}
           editable={false}
         />
       </View>
@@ -180,7 +196,7 @@ export default function SearchIncomeForm({ db, handleCloseForm }) {
       <FlatList
         data={searchedIncomes}
         renderItem={renderItem}
-        keyExtractor={(item) => item.expenseId.toString()}
+        keyExtractor={(item) => item.incomeId.toString()}
       />
       {show && (
         <DateTimePicker

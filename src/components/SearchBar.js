@@ -1,4 +1,3 @@
-import { useRef, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
 
 export default function SearchBar({ text, setText, placeholder }) {

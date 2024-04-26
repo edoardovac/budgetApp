@@ -28,8 +28,8 @@ export const selectAllIncomeByMonth = (db, setIncomesMonth) => {
   db.transaction(
     (tx) => {
       tx.executeSql(
-        selectIncomesByMonthQuery(dateStart, dateStop),
-        [],
+        selectIncomesByMonthQuery(),
+        [dateStart, dateStop],
         (_, { rows }) => setIncomesMonth(rows._array)
       );
     },
@@ -44,8 +44,8 @@ export const selectIncomeSumByMonth = (db, setIncomesSum) => {
   db.transaction(
     (tx) => {
       tx.executeSql(
-        selectIncomeSumByMonthQuery(dateStart, dateStop),
-        [],
+        selectIncomeSumByMonthQuery(),
+        [dateStart, dateStop],
         (_, { rows }) => {
           const sum = rows.item(0)["SUM"];
           if (!sum) {

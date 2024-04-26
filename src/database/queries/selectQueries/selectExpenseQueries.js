@@ -5,9 +5,9 @@ export const selectAllExpenseQuery = () => {
 
 // allowed values: 'CASH','DEBIT CARD','CREDIT CARD','CHECK',
 // 'WIRE TRANSFER','BANK TRANSFER','CRYPTO','OTHER'
-export const selectExpenseByTypeQuery = (type) => {
+export const selectExpenseByTypeQuery = () => {
   return `SELECT expenseId, name, description, import, date, categoryId FROM Expense
-  WHERE type = ${type};`;
+  WHERE type = ?;`;
 };
 
 export const selectExpensesFixedQuery = () => {
@@ -20,15 +20,15 @@ export const selectExpensesNonFixedQuery = () => {
   WHERE fixed = "NO";`;
 };
 
-export const selectExpensesByMonthQuery = (dateStart, dateStop) => {
+export const selectExpensesByMonthQuery = () => {
   return `SELECT expenseId, name, description, import, date, type, fixed, categoryId FROM Expense
-  WHERE fixed = "YES" OR (date >= '${dateStart}' AND date < '${dateStop}')
+  WHERE fixed = "YES" OR (date >= ? AND date < ?)
   ORDER BY date DESC, expenseId DESC;`;
 };
 
-export const selectExpenseSumMonthQuery = (dateStart, dateStop) => {
+export const selectExpenseSumMonthQuery = () => {
   return `SELECT SUM(import) AS 'SUM' FROM Expense
-    WHERE fixed = "YES" OR (date >= '${dateStart}' AND date < '${dateStop}');`;
+    WHERE fixed = "YES" OR (date >= ? AND date < ?);`;
 };
 
 export const selectExpenseSumFixedQuery = () => {
@@ -36,7 +36,7 @@ export const selectExpenseSumFixedQuery = () => {
   WHERE fixed = "YES";`;
 };
 
-export const selectExpenseSumByCategoryI = (categoryId) => {
+export const selectExpenseSumByCategoryI = () => {
   return `SELECT SUM(import) AS 'SUUM' FROM Expense
   WHERE categoryId = ?`;
 };

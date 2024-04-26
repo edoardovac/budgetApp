@@ -28,8 +28,8 @@ export const selectAllExpenseMonth = (db, setExpensesMonth) => {
   db.transaction(
     (tx) => {
       tx.executeSql(
-        selectExpensesByMonthQuery(dateStart, dateStop),
-        [],
+        selectExpensesByMonthQuery(),
+        [dateStart, dateStop],
         (_, { rows }) => setExpensesMonth(rows._array)
       );
     },
@@ -44,8 +44,8 @@ export const selectExpenseSumByMonth = (db, setExpensesSum) => {
   db.transaction(
     (tx) => {
       tx.executeSql(
-        selectExpenseSumMonthQuery(dateStart, dateStop),
-        [],
+        selectExpenseSumMonthQuery(),
+        [dateStart, dateStop],
         (_, { rows }) => {
           const sum = rows.item(0)["SUM"];
           if (!sum) {

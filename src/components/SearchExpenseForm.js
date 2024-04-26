@@ -8,12 +8,8 @@ import SearchBar from "./SearchBar";
 import { Picker } from "@react-native-picker/picker";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
-import {
-  formatDate,
-  formatDateStringDDMMYYYY,
-  formatDateStringDDMMYYYYReverse,
-  formatDateStringYYYYMMDD,
-} from "./formatDate";
+import { formatDate, formatDateStringYYYYMMDD } from "./formatDate";
+import { deleteExpenseById } from "../database/dbFunctions/deleteDbfunctions/deleteExpense";
 
 export default function SearchExpenseForm({ db, handleCloseForm }) {
   const [expenses, setExpenses] = useState([]);
@@ -29,9 +25,13 @@ export default function SearchExpenseForm({ db, handleCloseForm }) {
   const [flag, setFlag] = useState();
 
   useEffect(() => {
-    selectAllExpense(db, setExpenses);
+    fetchExpenses();
     selectAllCategory(db, setCategories);
   }, []);
+
+  const fetchExpenses = () => {
+    selectAllExpense(db, setExpenses);
+  };
 
   const searchedExpenses = expenses.filter((expense) => {
     const nameMatch = expense.name.toLowerCase().includes(text.toLowerCase());
@@ -110,7 +110,7 @@ export default function SearchExpenseForm({ db, handleCloseForm }) {
                 onPress: () => {
                   console.log("DELETE PRESSED");
                   deleteExpenseById(db, item.expenseId);
-                  fetchExpensesAndSum();
+                  fetchExpenses();
                 },
               },
             ]
@@ -122,8 +122,7 @@ export default function SearchExpenseForm({ db, handleCloseForm }) {
             {item.name} - {item.import.toFixed(2)} €
           </ListItem.Title>
           <ListItem.Subtitle>
-            {formatDate(item.date)} fixed? {item.fixed} date?
-            {formatDateStringYYYYMMDD(item.date).toISOString()}
+            {formatDate(item.date)} fixed? {item.fixed}
           </ListItem.Subtitle>
         </ListItem.Content>
       </ListItem>

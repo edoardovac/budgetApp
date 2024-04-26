@@ -3,25 +3,16 @@ import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
 import { useCallback, useEffect, useState } from "react";
 import { createAllTables } from "../database/dbFunctions/createDbFunctions";
-import {
-  selectAllExpenseMonth,
-  selectExpenseSumByMonth,
-} from "../database/dbFunctions/selectDbFunctions/selectExpenseFunctions";
-import {
-  selectAllIncomeByMonth,
-  selectIncomeSumByMonth,
-} from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
+import { selectExpenseSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectExpenseFunctions";
+import { selectIncomeSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
 import { useFocusEffect } from "@react-navigation/native";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
 export default function HomeScreen({ navigation }) {
-  const [expensesMonth, setExpensesMonth] = useState([]);
   const [expensesSum, setExpensesSum] = useState(0);
-  const [incomesMonth, setIncomesMonth] = useState([]);
   const [incomesSum, setIncomesSum] = useState(0);
   const [netBalance, setNetBalance] = useState(0);
-  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     createAllTables(db);
