@@ -6,6 +6,7 @@ import { createAllTables } from "../database/dbFunctions/createDbFunctions";
 import { selectExpenseSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectExpenseFunctions";
 import { selectIncomeSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
 import { useFocusEffect } from "@react-navigation/native";
+import { selectNetBalanceByMonth } from "../database/dbFunctions/selectDbFunctions/selectNetBalanceFunction";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
@@ -22,6 +23,7 @@ export default function HomeScreen({ navigation }) {
     useCallback(() => {
       fetchExpenseSumByMonth();
       fetchIncomeSumByMonth();
+      fetchNetBalanceByMonth();
     }, [])
   );
 
@@ -37,9 +39,8 @@ export default function HomeScreen({ navigation }) {
     selectIncomeSumByMonth(db, setIncomesSum);
   };
 
-  const fetchAllSumByMonth = () => {
-    selectExpenseSumByMonth(db, setExpensesSum);
-    selectIncomeSumByMonth(db, setIncomesSum);
+  const fetchNetBalanceByMonth = () => {
+    selectNetBalanceByMonth(db, setNetBalance);
   };
 
   return (
