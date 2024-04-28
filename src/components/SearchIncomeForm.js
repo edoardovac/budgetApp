@@ -83,7 +83,7 @@ export default function SearchIncomeForm({ db, handleCloseForm }) {
       if (!endDate) {
         return "End date";
       } else {
-        return formatDate(setEndDate);
+        return formatDate(endDate);
       }
     }
   };
@@ -131,7 +131,11 @@ export default function SearchIncomeForm({ db, handleCloseForm }) {
 
   return (
     <View style={styles.container}>
-      <SearchBar text={text} setText={setText} placeholder={"Search..."} />
+      <SearchBar
+        text={text}
+        setText={setText}
+        placeholder={"Search income..."}
+      />
       <View style={styles.dateContainer}>
         <Button
           title="Choose start date: "

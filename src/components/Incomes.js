@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, FlatList, Alert, Button } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Alert,
+  Button,
+  Switch,
+} from "react-native";
 import { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
@@ -13,18 +21,23 @@ import { ListItem } from "@rneui/themed";
 import { formatDate } from "./formatDate";
 import IncomeForm from "./IncomeForm";
 import SearchBar from "./SearchBar";
+import SearchIncomeForm from "./SearchIncomeForm";
 
 export default function Incomes({ route, navigation }) {
   const { db } = route.params;
   const [incomesMonth, setIncomesMonth] = useState([]);
   const [incomesSum, setIncomesSum] = useState(0);
   const [incomesSumFixed, setIncomesSumFixed] = useState(0);
-  const [open, setOpen] = useState(false);
+  const [openIncomeForm, setOpenIncomeForm] = useState(false);
+  const [openSeachForm, setOpenSeachForm] = useState(false);
   const [text, setText] = useState("");
+  const [fixedFilter, setFixedFilter] = useState(false);
 
   useFocusEffect(
     useCallback(() => {
       fetchIncomesAndSum();
+      setOpenIncomeForm(false);
+      setOpenSeachForm(false);
     }, [])
   );
 
@@ -34,18 +47,35 @@ export default function Incomes({ route, navigation }) {
     selectIncomesSumFixed(db, setIncomesSumFixed);
   };
 
-  const handleOpenForm = () => {
-    setOpen(true);
+  const handleOpenIncomeForm = () => {
+    setOpenIncomeForm(true);
   };
 
-  const handleCloseForm = () => {
-    setOpen(false);
+  const handleCloseIncomeForm = () => {
+    setOpenIncomeForm(false);
     fetchIncomesAndSum();
   };
 
+  const handleOpenSearchForm = () => {
+    setOpenSeachForm(true);
+  };
+
+  const handleCloseSearchForm = () => {
+    setOpenSeachForm(false);
+  };
+
   const searchedIncomes = incomesMonth.filter((income) => {
-    return income.name.toLowerCase().includes(text.toLowerCase());
+    const search = income.name.toLowerCase().includes(text.toLowerCase());
+    if (fixedFilter) {
+      return search && income.fixed.includes("YES");
+    } else {
+      return search;
+    }
   });
+
+  const switchFixedFilter = () => {
+    setFixedFilter(!fixedFilter);
+  };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity>
@@ -88,41 +118,61 @@ export default function Incomes({ route, navigation }) {
     </TouchableOpacity>
   );
 
-  if (open === true) {
-    return (
-      <View>
-        <Text>ADD AN INCOME</Text>
-        <IncomeForm db={db} handleCloseForm={handleCloseForm} />
-      </View>
-    );
-  } else {
-    return (
-      <View style={styles.container}>
-        <Text>TOTAL INCOMES THIS MONTH: {incomesSum.toFixed(2)} €</Text>
-        <Text> FIXED INCOMES: {incomesSumFixed.toFixed(2)} €</Text>
-        <Text>---</Text>
-        <FlatList
-          data={searchedIncomes}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.incomeId.toString()}
-          ListHeaderComponent={
+  if (openIncomeForm === true) {
+    return <IncomeForm db={db} handleCloseForm={handleCloseIncomeForm} />;
+  }
+  if (openSeachForm) {
+    return <SearchIncomeForm db={db} handleCloseForm={handleCloseSearchForm} />;
+  }
+  return (
+    <View style={styles.container}>
+      <Text>TOTAL INCOMES THIS MONTH: {incomesSum.toFixed(2)} €</Text>
+      <Text> FIXED INCOMES: {incomesSumFixed.toFixed(2)} €</Text>
+      <Text>---</Text>
+      <FlatList
+        data={searchedIncomes}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.incomeId.toString()}
+        ListHeaderComponent={
+          <View style={styles.filterContainer}>
             <SearchBar
               text={text}
               setText={setText}
               placeholder={"Search this month..."}
+              style={{ flex: 1 }}
             />
-          }
-        />
-        <Button title="New Income" onPress={handleOpenForm} />
-        <StatusBar />
-      </View>
-    );
-  }
+            <View style={styles.switchContainer}>
+              <Text>Fixed?</Text>
+              <Switch
+                value={fixedFilter}
+                onValueChange={switchFixedFilter}
+                style={styles.switch}
+              />
+            </View>
+          </View>
+        }
+      />
+      <Button title="Search all" onPress={handleOpenSearchForm} />
+      <Button title="New Income" onPress={handleOpenIncomeForm} />
+      <StatusBar />
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
+  },
+  filterContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  switchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  switch: {
+    marginLeft: 10,
   },
 });

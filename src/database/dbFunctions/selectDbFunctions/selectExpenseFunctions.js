@@ -2,8 +2,10 @@ import {
   currentDateStart,
   currentDateStop,
 } from "../../../components/currentDate";
+import { formatDateReverse } from "../../../components/formatDate";
 import {
   selectAllExpenseQuery,
+  selectExpenseDateQuery,
   selectExpensesByMonthQuery,
   selectExpenseSumFixedQuery,
   selectExpenseSumMonthQuery,
@@ -80,5 +82,26 @@ export const selectExpenseSumFixed = (db, setExpensesSumFixed) => {
         error
       ),
     () => console.log("SUM of FIXED monthly expenses selected successfully")
+  );
+};
+
+export const selectExpenseDate = (db, setExpenseDates) => {
+  db.transaction(
+    (tx) => {
+      tx.executeSql(selectExpenseDateQuery(), [], (_, { rows }) => {
+        const currentDate = formatDateReverse(new Date());
+        const expenseDot = { key: "expense", color: "red" };
+        const wantedResult = {
+          [currentDate]: { selected: true, selectedColor: "lightblue" },
+        };
+        rows._array.forEach((row) => {
+          wantedResult[row.date] = { dots: [expenseDot] };
+        });
+        setExpenseDates(wantedResult);
+      });
+    },
+    (error) =>
+      console.error("Error when selecting all expenses dates: ", error),
+    () => console.log("All expense dates selected successfully")
   );
 };

@@ -36,6 +36,8 @@ export default function Expenses({ route, navigation }) {
   useFocusEffect(
     useCallback(() => {
       fetchExpensesAndSum();
+      setOpenExpenseForm(false);
+      setOpenSeachForm(false);
     }, [])
   );
 

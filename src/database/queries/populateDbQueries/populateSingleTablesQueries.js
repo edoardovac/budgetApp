@@ -3,8 +3,8 @@ export const populateCategoryQuery = () => {
     ('Food', 'Expenses related to groceries and dining out'),
     ('Transportation', 'Expenses related to commuting and vehicle maintenance'),
     ('Utilities', 'Expenses related to electricity, water, and internet bills'),
-    ('Entertainment', 'Expenses related to leisure activities and entertainment');
-    INSERT INTO Category (name) VALUES ('Miscellaneous');`;
+    ('Entertainment', 'Expenses related to leisure activities and entertainment'),
+    ('Miscellaneous', 'No description');`;
 };
 
 export const populateExpenseQuery = () => {
@@ -26,6 +26,6 @@ export const populateIncomeQuery = () => {
     ('Salary', 'Monthly income', 3000.00, '2024-04-01', 'BANK TRANSFER', 'YES', 5),
     ('Freelance Work', 'Payment for freelance project', 500.00, '2024-04-10', 'BANK TRANSFER', 'NO', 5),
     ('Stock Dividend', NULL, 200.00, '2024-04-15', 'BANK TRANSFER', 'NO', 5),
-    ('Gift', 'Birthday gift', 50.00, '2024-04-20', 'CASH', 'NO', 5),
+    ('Gift', 'Birthday gift', 50.00, '2024-04-20', 'CASH', 'NO', 4),
     ('Interest', 'Savings account interest', 20.00, '2024-04-25', 'BANK TRANSFER', 'NO', 5);`;
 };

@@ -1,5 +1,6 @@
 import {
   selectAllIncomeQuery,
+  selectIncomeDateQuery,
   selectIncomesByMonthQuery,
   selectIncomeSumByMonthQuery,
   selectIncomeSumFixedQuery,
@@ -8,6 +9,7 @@ import {
   currentDateStart,
   currentDateStop,
 } from "../../../components/currentDate";
+import { formatDateReverse } from "../../../components/formatDate";
 
 export const selectAllIncome = (db, setIncomes) => {
   db.transaction(
@@ -80,5 +82,25 @@ export const selectIncomesSumFixed = (db, setIncomesSumFixed) => {
         error
       ),
     () => console.log("SUM of FIXED monthly incomes selected successfully")
+  );
+};
+
+export const selectIncomeDate = (db, setIncomeDate) => {
+  db.transaction(
+    (tx) => {
+      tx.executeSql(selectIncomeDateQuery(), [], (_, { rows }) => {
+        const currentDate = formatDateReverse(new Date());
+        const incomeDot = { key: "income", color: "green" };
+        const wantedResult = {
+          [currentDate]: { selected: true, selectedColor: "lightblue" },
+        };
+        rows._array.forEach((row) => {
+          wantedResult[row.date] = { dots: [incomeDot] };
+        });
+        setIncomeDate(wantedResult);
+      });
+    },
+    (error) => console.error("Error when selecting all income dates: ", error),
+    () => console.log("All income dates selected successfully")
   );
 };

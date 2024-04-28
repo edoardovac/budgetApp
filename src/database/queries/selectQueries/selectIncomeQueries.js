@@ -1,5 +1,5 @@
 export const selectAllIncomeQuery = () => {
-  return `SELECT incomeId, name, description, import, date, type, fixed, categroyId FROM Income
+  return `SELECT incomeId, name, description, import, date, type, fixed, categoryId FROM Income
   ORDER BY date DESC, incomeId DESC;`;
 };
 
@@ -34,4 +34,8 @@ export const selectIncomeSumByMonthQuery = () => {
 export const selectIncomeSumFixedQuery = () => {
   return `SELECT SUM(import) AS 'SUM' From Income
   WHERE fixed = "YES";`;
+};
+
+export const selectIncomeDateQuery = () => {
+  return `SELECT date FROM Income;`;
 };
