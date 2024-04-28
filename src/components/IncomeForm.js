@@ -25,6 +25,7 @@ export default function IncomeForm({ db, handleCloseForm }) {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [categories, setCategories] = useState([]);
+  const [selectedCategoryName, setSelectedCategoryName] = useState("");
 
   useEffect(() => {
     selectAllCategory(db, setCategories);
@@ -113,7 +114,15 @@ export default function IncomeForm({ db, handleCloseForm }) {
       </Picker>
       <Picker
         selectedValue={categoryId}
-        onValueChange={(itemValue, itemIndex) => setCategoryId(itemValue)}
+        onValueChange={(itemValue, itemIndex) => {
+          setCategoryId(itemValue);
+          const selectedCategory = categories.find(
+            (category) => category.categoryId === itemValue
+          );
+          setSelectedCategoryName(
+            selectedCategory ? selectedCategory.name : ""
+          );
+        }}
         style={styles.picker}
       >
         <Picker.Item label="Select Category" value="" />
@@ -162,7 +171,7 @@ export default function IncomeForm({ db, handleCloseForm }) {
                   givenImport
                 ).toFixed(2)} €, on ${formatDate(
                   date
-                )}, in the ${categoryId} category?`,
+                )}, in the ${selectedCategoryName} category?`,
                 [
                   {
                     text: "Cancel",
