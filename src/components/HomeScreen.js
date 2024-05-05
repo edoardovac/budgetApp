@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
 import { useCallback, useEffect, useState } from "react";
@@ -7,6 +7,7 @@ import { selectExpenseSumByMonth } from "../database/dbFunctions/selectDbFunctio
 import { selectIncomeSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
 import { useFocusEffect } from "@react-navigation/native";
 import { selectNetBalanceByMonth } from "../database/dbFunctions/selectDbFunctions/selectNetBalanceFunction";
+import { FAB, Text } from "react-native-paper";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
@@ -46,20 +47,27 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View>
-        <Text>MONEY TO SPEND THIS MONTH STILL: {netBalance.toFixed(2)} €</Text>
+        <Text variant="bodyLarge">
+          MONEY TO SPEND THIS MONTH STILL: {netBalance.toFixed(2)} €
+        </Text>
         <Text>---</Text>
       </View>
       <View>
-        <Text>EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €</Text>
+        <Text variant="displayLarge">
+          EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €
+        </Text>
       </View>
       <View>
         <Text>---</Text>
       </View>
       <View>
-        <Text>INCOME THIS MONTH: {incomesSum.toFixed(2)} €</Text>
+        <Text variant="headlineMedium">
+          INCOME THIS MONTH: {incomesSum.toFixed(2)} €
+        </Text>
         <Text>---</Text>
-        <Button
-          title="Expenses"
+        <FAB
+          icon="arrow-left-bold-outline"
+          label="Expenses"
           onPress={() =>
             navigation.navigate("Expenses", {
               db: db,
@@ -67,8 +75,9 @@ export default function HomeScreen({ navigation }) {
           }
         />
         <Text>---</Text>
-        <Button
-          title="Incomes"
+        <FAB
+          icon="arrow-right-bold-outline"
+          label="Incomes"
           onPress={() =>
             navigation.navigate("Incomes", {
               db: db,
@@ -84,6 +93,5 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "green",
   },
 });
