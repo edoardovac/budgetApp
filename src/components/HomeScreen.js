@@ -7,7 +7,7 @@ import { selectExpenseSumByMonth } from "../database/dbFunctions/selectDbFunctio
 import { selectIncomeSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
 import { useFocusEffect } from "@react-navigation/native";
 import { selectNetBalanceByMonth } from "../database/dbFunctions/selectDbFunctions/selectNetBalanceFunction";
-import { FAB, Text } from "react-native-paper";
+import { FAB, ProgressBar, Text } from "react-native-paper";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
@@ -15,6 +15,7 @@ export default function HomeScreen({ navigation }) {
   const [expensesSum, setExpensesSum] = useState(0);
   const [incomesSum, setIncomesSum] = useState(0);
   const [netBalance, setNetBalance] = useState(0);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     createAllTables(db);
@@ -30,6 +31,13 @@ export default function HomeScreen({ navigation }) {
 
   useEffect(() => {
     setNetBalance(incomesSum - expensesSum);
+    if (incomesSum !== 0) {
+      const calculatedProgress =
+        Math.min(Math.max(expensesSum / incomesSum, 0), 1) * 100;
+      setProgress(calculatedProgress);
+    } else {
+      setProgress(0);
+    }
   }, [incomesSum, expensesSum]);
 
   const fetchExpenseSumByMonth = () => {
@@ -47,13 +55,13 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View>
-        <Text variant="bodyLarge">
+        <Text variant="headlineMedium">
           MONEY TO SPEND THIS MONTH STILL: {netBalance.toFixed(2)} €
         </Text>
         <Text>---</Text>
       </View>
       <View>
-        <Text variant="displayLarge">
+        <Text variant="headlineSmall">
           EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €
         </Text>
       </View>
@@ -61,7 +69,7 @@ export default function HomeScreen({ navigation }) {
         <Text>---</Text>
       </View>
       <View>
-        <Text variant="headlineMedium">
+        <Text variant="headlineSmall">
           INCOME THIS MONTH: {incomesSum.toFixed(2)} €
         </Text>
         <Text>---</Text>
@@ -84,6 +92,10 @@ export default function HomeScreen({ navigation }) {
             })
           }
         />
+        <Text variant="headlineSmall" style={{ marginRight: 10 }}>
+          Expenses over Incomes:
+        </Text>
+        <ProgressBar progress={progress / 100} color={"red"} />
       </View>
       <StatusBar />
     </View>
@@ -93,5 +105,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 20,
   },
 });

@@ -1,12 +1,16 @@
+import { View, StyleSheet, FlatList } from "react-native";
 import {
-  View,
   Text,
-  StyleSheet,
-  FlatList,
-  Alert,
-  Button,
-  Switch,
-} from "react-native";
+  ToggleButton,
+  FAB,
+  Portal,
+  List,
+  Divider,
+  useTheme,
+  IconButton,
+  Dialog,
+  Snackbar,
+} from "react-native-paper";
 import { useState, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
@@ -15,8 +19,6 @@ import {
   selectExpenseSumFixed,
 } from "../database/dbFunctions/selectDbFunctions/selectExpenseFunctions";
 import { useFocusEffect } from "@react-navigation/native";
-import { ListItem } from "@rneui/themed";
-import { TouchableOpacity } from "react-native-gesture-handler";
 import { formatDate } from "./formatDate";
 import { deleteExpenseById } from "../database/dbFunctions/deleteDbfunctions/deleteExpense";
 import ExpenseForm from "./ExpenseForm";
@@ -31,7 +33,12 @@ export default function Expenses({ route, navigation }) {
   const [openExpenseForm, setOpenExpenseForm] = useState(false);
   const [openSeachForm, setOpenSeachForm] = useState(false);
   const [text, setText] = useState("");
-  const [fixedFilter, setFixedFilter] = useState(false);
+  const [status, setStatus] = useState("unchecked");
+  const [openFab, setOpenFab] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+
+  const { fonts } = useTheme();
 
   useFocusEffect(
     useCallback(() => {
@@ -66,56 +73,93 @@ export default function Expenses({ route, navigation }) {
 
   const searchedExpenses = expensesMonth.filter((expenses) => {
     const search = expenses.name.toLowerCase().includes(text.toLowerCase());
-    if (fixedFilter) {
+    if (status === "checked") {
       return search && expenses.fixed.includes("YES");
     } else {
       return search;
     }
   });
 
-  const switchFixedFilter = () => {
-    setFixedFilter(!fixedFilter);
+  // "fixed?" toggle button
+  const onButtonToggle = (value) => {
+    setStatus(status === "checked" ? "unchecked" : "checked");
   };
 
+  // handles opening/closing of the fab.group
+  const onStateChange = ({ open }) => setOpenFab(open);
+
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  //const onDismissSnackBar = () => setSnackBarOpen(false);
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity>
-      <ListItem
-        bottomDivider
-        onPress={() => {
-          console.log(item.name);
-          Alert.alert(
-            `Delete ${item.name}?`,
-            `Delete expense ${item.name}, ${item.import.toFixed(
-              2
-            )}€ on ${formatDate(item.date)}`,
-            [
-              {
-                text: "Cancel",
-                onPress: () => console.log("Cancel pressed"),
-                style: "cancel",
-              },
-              {
-                text: "DELETE",
-                onPress: () => {
-                  console.log("DELETE PRESSED");
-                  deleteExpenseById(db, item.expenseId);
-                  fetchExpensesAndSum();
-                },
-              },
-            ]
-          );
+    // need to set style for each item, to have them less spread out
+    <View>
+      <List.Accordion
+        title={`${item.name} - ${item.import.toFixed(2)} €`}
+        titleStyle={{
+          fontFamily: fonts.titleMedium.fontFamily,
+          fontWeight: fonts.titleMedium.fontWeight,
         }}
       >
-        <ListItem.Content>
-          <ListItem.Title>
-            {item.name} - {item.import.toFixed(2)} €
-          </ListItem.Title>
-          <ListItem.Subtitle>
-            {formatDate(item.date)} fixed? {item.fixed}
-          </ListItem.Subtitle>
-        </ListItem.Content>
-      </ListItem>
-    </TouchableOpacity>
+        <List.Item
+          description={`Date: ${formatDate(item.date)}`}
+          descriptionStyle={{
+            fontFamily: fonts.bodyLarge.fontFamily,
+            fontWeight: fonts.bodyLarge.fontWeight,
+          }}
+        />
+        <Divider />
+        <List.Item
+          description={`${item.description}`}
+          descriptionStyle={{
+            fontFamily: fonts.bodyLarge.fontFamily,
+            fontWeight: fonts.bodyLarge.fontWeight,
+          }}
+        />
+        <Divider />
+        <List.Item
+          description={`Type of transaction: ${item.type}`}
+          descriptionStyle={{
+            fontFamily: fonts.bodyLarge.fontFamily,
+            fontWeight: fonts.bodyLarge.fontWeight,
+          }}
+        />
+        <Divider />
+        <List.Item
+          description={`Recurring? ${item.fixed}`}
+          descriptionStyle={{
+            fontFamily: fonts.bodyLarge.fontFamily,
+            fontWeight: fonts.bodyLarge.fontWeight,
+          }}
+        />
+        <List.Item
+          description={`Category: ${item.categoryId}`}
+          descriptionStyle={{
+            fontFamily: fonts.bodyLarge.fontFamily,
+            fontWeight: fonts.bodyLarge.fontWeight,
+          }}
+        />
+        <Divider />
+        <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <IconButton
+            icon="trash-can-outline"
+            onPress={() => {
+              console.log("perdindirindina");
+              handleOpenDeleteDialog();
+            }}
+          />
+          <IconButton icon="lead-pencil" onPress={() => console.log("mazzi")} />
+        </View>
+      </List.Accordion>
+      <Divider />
+    </View>
   );
 
   if (openExpenseForm === true) {
@@ -128,52 +172,86 @@ export default function Expenses({ route, navigation }) {
   }
   return (
     <View style={styles.container}>
-      <Text>TOTAL EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €</Text>
-      <Text> FIXED EXPENSES: {expensesSumFixed.toFixed(2)} €</Text>
+      <Text variant="bodyLarge">
+        TOTAL EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €
+      </Text>
+      <Text variant="bodyLarge">
+        FIXED EXPENSES: {expensesSumFixed.toFixed(2)} €
+      </Text>
+      <View style={styles.filterContainer}>
+        <View style={styles.switchContainer}>
+          <Text variant="labelLarge">Fixed?</Text>
+          <ToggleButton
+            icon="check"
+            value="fixed?"
+            status={status}
+            onPress={onButtonToggle}
+          />
+        </View>
+        <SearchBar
+          text={text}
+          setText={setText}
+          placeholder={"Search this month..."}
+        />
+      </View>
       <FlatList
         data={searchedExpenses}
         renderItem={renderItem}
         keyExtractor={(item) => item.expenseId.toString()}
-        ListHeaderComponent={
-          <View style={styles.filterContainer}>
-            <SearchBar
-              text={text}
-              setText={setText}
-              placeholder={"Search this month..."}
-              style={{ flex: 1 }}
-            />
-            <View style={styles.switchContainer}>
-              <Text>Fixed?</Text>
-              <Switch
-                value={fixedFilter}
-                onValueChange={switchFixedFilter}
-                style={styles.switch}
-              />
-            </View>
-          </View>
-        }
       />
-      <Button title="Search all" onPress={handleOpenSearchForm} />
-      <Button title="New Expense" onPress={handleOpenExpenseForm} />
+      <Portal>
+        <FAB.Group
+          open={openFab}
+          visible
+          icon={openFab ? "calendar-today" : "plus"}
+          actions={[
+            { icon: "plus", label: "Add", onPress: handleOpenExpenseForm },
+            {
+              icon: "magnify",
+              label: "Search all",
+              onPress: handleOpenSearchForm,
+            },
+          ]}
+          onStateChange={onStateChange}
+        />
+      </Portal>
       <StatusBar />
     </View>
   );
 }
 
+/*        <Snackbar
+          visible={snackBarOpen}
+          onDismiss={onDismissSnackBar}
+          action={{
+            label: "Close",
+            onPress: () => {
+              setSnackBarOpen(false);
+            },
+          }}
+        >
+          Element deleted
+        </Snackbar>*/
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "yellow",
+    paddingHorizontal: 16,
   },
   filterContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 16,
   },
   switchContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginLeft: 16,
   },
-  switch: {
-    marginLeft: 10,
+  fab: {
+    position: "absolute",
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
 });

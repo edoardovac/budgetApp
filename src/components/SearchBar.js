@@ -1,24 +1,7 @@
-import { StyleSheet, TextInput, View } from "react-native";
+import { Searchbar } from "react-native-paper";
 
 export default function SearchBar({ text, setText, placeholder }) {
   return (
-    <View>
-      <TextInput
-        style={styles.input}
-        onChangeText={(textInput) => setText(textInput)}
-        value={text}
-        placeholder={placeholder}
-      />
-    </View>
+    <Searchbar placeholder={placeholder} onChangeText={setText} value={text} />
   );
 }
-
-const styles = StyleSheet.create({
-  input: {
-    height: 40,
-    marginBottom: 12,
-    marginRight: 8,
-    borderWidth: 1,
-    padding: 10,
-  },
-});

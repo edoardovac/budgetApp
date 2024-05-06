@@ -52,6 +52,15 @@ export default function PaperDrawer(props) {
           navigation.navigate("Settings");
         }}
       />
+      <Drawer.Item
+        label="Prova Testo"
+        icon="wrench"
+        active={active === "testo"}
+        onPress={() => {
+          setActive("testo");
+          navigation.navigate("Prova Testo");
+        }}
+      />
     </Drawer.Section>
   );
 }

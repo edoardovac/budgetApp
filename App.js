@@ -95,22 +95,6 @@ const CombinedDefaultTheme = {
       ...MD3LightTheme.fonts.bodySmall,
       fontFamily: "Podkova_400Regular",
     },
-    regular: {
-      fontFamily: "Podkova_400Regular",
-      fontWeight: "400",
-    },
-    medium: {
-      fontFamily: "Podkova_500Medium",
-      fontWeight: "500",
-    },
-    bold: {
-      fontFamily: "Podkova_600SemiBold",
-      fontWeight: "600",
-    },
-    heavy: {
-      fontFamily: "Podkova_700Bold",
-      fontWeight: "700",
-    },
   },
 };
 
@@ -195,8 +179,6 @@ export default function App() {
     Podkova_700Bold,
     Podkova_800ExtraBold,
   });
-
-  console.log(fontsLoaded);
 
   if (!fontsLoaded) {
     return <ActivityIndicator animating={true} />;
