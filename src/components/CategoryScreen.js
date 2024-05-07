@@ -100,6 +100,7 @@ export default function CategoryScreen() {
                 text={text}
                 setText={setText}
                 placeholder={"Search categories..."}
+                origin={"category"}
               />
             </View>
           }

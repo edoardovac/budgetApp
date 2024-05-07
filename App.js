@@ -106,66 +106,66 @@ const CombinedDarkTheme = {
     ...DarkTheme.colors,
   },
   fonts: {
-    ...MD3DarkTheme,
+    ...MD3DarkTheme.fonts,
     displayLarge: {
+      ...MD3DarkTheme.fonts.displayLarge,
       fontFamily: "Podkova_800ExtraBold",
-      fontWeight: "bold",
     },
     displayMedium: {
+      ...MD3DarkTheme.fonts.displayMedium,
       fontFamily: "Podkova_700Bold",
-      fontWeight: "bold",
     },
     displaySmall: {
+      ...MD3DarkTheme.fonts.displaySmall,
       fontFamily: "Podkova_600SemiBold",
-      fontWeight: "normal",
     },
     headlineLarge: {
+      ...MD3DarkTheme.fonts.headlineLarge,
       fontFamily: "Podkova_800ExtraBold",
-      fontWeight: "bold",
     },
     headlineMedium: {
+      ...MD3DarkTheme.fonts.headlineMedium,
       fontFamily: "Podkova_700Bold",
-      fontWeight: "bold",
     },
     headlineSmall: {
+      ...MD3DarkTheme.fonts.headlineSmall,
       fontFamily: "Podkova_600SemiBold",
-      fontWeight: "normal",
     },
     titleLarge: {
+      ...MD3LightTheme.fonts.titleLarge,
       fontFamily: "Podkova_800ExtraBold",
-      fontWeight: "bold",
     },
     titleMedium: {
+      ...MD3DarkTheme.fonts.titleMedium,
       fontFamily: "Podkova_700Bold",
-      fontWeight: "bold",
     },
     titleSmall: {
+      ...MD3DarkTheme.fonts.titleSmall,
       fontFamily: "Podkova_600SemiBold",
-      fontWeight: "normal",
     },
     labelLarge: {
+      ...MD3DarkTheme.fonts.labelLarge,
       fontFamily: "Podkova_800ExtraBold",
-      fontWeight: "bold",
     },
     labelMedium: {
+      ...MD3DarkTheme.fonts.labelMedium,
       fontFamily: "Podkova_700Bold",
-      fontWeight: "bold",
     },
     labelSmall: {
+      ...MD3DarkTheme.fonts.labelSmall,
       fontFamily: "Podkova_600SemiBold",
-      fontWeight: "normal",
     },
     bodyLarge: {
+      ...MD3DarkTheme.fonts.bodyLarge,
       fontFamily: "Podkova_500Medium",
-      fontWeight: "normal",
     },
     bodyMedium: {
+      ...MD3DarkTheme.fonts.bodyMedium,
       fontFamily: "Podkova_400Regular",
-      fontWeight: "normal",
     },
     bodySmall: {
+      ...MD3DarkTheme.fonts.bodySmall,
       fontFamily: "Podkova_400Regular",
-      fontWeight: "normal",
     },
   },
 };

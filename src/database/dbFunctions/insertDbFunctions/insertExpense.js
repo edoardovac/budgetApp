@@ -25,7 +25,7 @@ export const insertExpense = (
   //  'CRYPTO', 'OTHER'
   let givenType;
   const regexType = new RegExp(
-    /^(CASH|DEBIT CARD|CREDIT CARD|CHECK|WIRE TRANSFER|BANK TRANFER|CRYPTO|OTHER)$/
+    /^(CASH|DEBIT CARD|CREDIT CARD|CHECK|WIRE TRANSFER|BANK TRANSFER|CRYPTO|OTHER)$/
   );
   if (regexType.test(type) === false) {
     givenType = "OTHER";

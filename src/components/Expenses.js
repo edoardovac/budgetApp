@@ -10,6 +10,7 @@ import {
   IconButton,
   Dialog,
   Snackbar,
+  Chip,
 } from "react-native-paper";
 import { useState, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -37,6 +38,8 @@ export default function Expenses({ route, navigation }) {
   const [openFab, setOpenFab] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [expenseDeleteItem, setExpenseDeleteItem] = useState();
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
 
   const { fonts } = useTheme();
 
@@ -73,17 +76,14 @@ export default function Expenses({ route, navigation }) {
 
   const searchedExpenses = expensesMonth.filter((expenses) => {
     const search = expenses.name.toLowerCase().includes(text.toLowerCase());
-    if (status === "checked") {
+    if (isSwitchOn) {
       return search && expenses.fixed.includes("YES");
     } else {
       return search;
     }
   });
 
-  // "fixed?" toggle button
-  const onButtonToggle = (value) => {
-    setStatus(status === "checked" ? "unchecked" : "checked");
-  };
+  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
 
   // handles opening/closing of the fab.group
   const onStateChange = ({ open }) => setOpenFab(open);
@@ -96,71 +96,71 @@ export default function Expenses({ route, navigation }) {
     setOpenDeleteDialog(false);
   };
 
-  //const onDismissSnackBar = () => setSnackBarOpen(false);
+  const handleOpenSnackBar = () => {
+    setSnackBarOpen(true);
+  };
+
+  const handleCloseSnackBar = () => {
+    setSnackBarOpen(false);
+  };
 
   const renderItem = ({ item }) => (
     // need to set style for each item, to have them less spread out
     <View>
       <List.Accordion
         title={`${item.name} - ${item.import.toFixed(2)} €`}
+        description={`${item.description}`}
         titleStyle={{
-          fontFamily: fonts.titleMedium.fontFamily,
-          fontWeight: fonts.titleMedium.fontWeight,
+          fontFamily: fonts.titleLarge.fontFamily,
+          fontWeight: fonts.titleLarge.fontWeight,
+        }}
+        descriptionStyle={{
+          fontFamily: fonts.labelLarge.fontFamily,
+          fontWeight: fonts.labelLarge.fontWeight,
         }}
       >
-        <List.Item
-          description={`Date: ${formatDate(item.date)}`}
-          descriptionStyle={{
-            fontFamily: fonts.bodyLarge.fontFamily,
-            fontWeight: fonts.bodyLarge.fontWeight,
+        <Text variant="bodyMedium" style={{ paddingHorizontal: 24 }}>
+          {"Date: " +
+            formatDate(item.date) +
+            "\n" +
+            "Type of transaction: " +
+            item.type +
+            "\n" +
+            "Recurring? " +
+            item.fixed +
+            "\n" +
+            "Category: " +
+            item.categoryId}
+        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            marginVertical: 5,
           }}
-        />
-        <Divider />
-        <List.Item
-          description={`${item.description}`}
-          descriptionStyle={{
-            fontFamily: fonts.bodyLarge.fontFamily,
-            fontWeight: fonts.bodyLarge.fontWeight,
-          }}
-        />
-        <Divider />
-        <List.Item
-          description={`Type of transaction: ${item.type}`}
-          descriptionStyle={{
-            fontFamily: fonts.bodyLarge.fontFamily,
-            fontWeight: fonts.bodyLarge.fontWeight,
-          }}
-        />
-        <Divider />
-        <List.Item
-          description={`Recurring? ${item.fixed}`}
-          descriptionStyle={{
-            fontFamily: fonts.bodyLarge.fontFamily,
-            fontWeight: fonts.bodyLarge.fontWeight,
-          }}
-        />
-        <List.Item
-          description={`Category: ${item.categoryId}`}
-          descriptionStyle={{
-            fontFamily: fonts.bodyLarge.fontFamily,
-            fontWeight: fonts.bodyLarge.fontWeight,
-          }}
-        />
-        <Divider />
-        <View style={{ flexDirection: "row", justifyContent: "center" }}>
-          <IconButton
+        >
+          <FAB
             icon="trash-can-outline"
+            label="Delete"
             onPress={() => {
               console.log("perdindirindina");
+              setExpenseDeleteItem(item);
+              handleCloseSnackBar();
               handleOpenDeleteDialog();
             }}
           />
-          <IconButton icon="lead-pencil" onPress={() => console.log("mazzi")} />
+          <FAB
+            icon="lead-pencil"
+            label="Modify"
+            onPress={() => console.log("mazzi")}
+          />
         </View>
       </List.Accordion>
       <Divider />
     </View>
   );
+
+  console.log(`open snack: ${snackBarOpen}`);
 
   if (openExpenseForm === true) {
     return <ExpenseForm db={db} handleCloseForm={handleCloseExpenseForm} />;
@@ -170,28 +170,22 @@ export default function Expenses({ route, navigation }) {
       <SearchExpenseForm db={db} handleCloseForm={handleCloseSearchForm} />
     );
   }
+
   return (
     <View style={styles.container}>
-      <Text variant="bodyLarge">
+      <Text variant="bodyLarge" style={{ marginTop: 8 }}>
         TOTAL EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €
       </Text>
       <Text variant="bodyLarge">
-        FIXED EXPENSES: {expensesSumFixed.toFixed(2)} €
+        RECURRING EXPENSES: {expensesSumFixed.toFixed(2)} €
       </Text>
       <View style={styles.filterContainer}>
-        <View style={styles.switchContainer}>
-          <Text variant="labelLarge">Fixed?</Text>
-          <ToggleButton
-            icon="check"
-            value="fixed?"
-            status={status}
-            onPress={onButtonToggle}
-          />
-        </View>
         <SearchBar
           text={text}
           setText={setText}
           placeholder={"Search this month..."}
+          status={isSwitchOn}
+          onToggleSwitch={onToggleSwitch}
         />
       </View>
       <FlatList
@@ -203,7 +197,7 @@ export default function Expenses({ route, navigation }) {
         <FAB.Group
           open={openFab}
           visible
-          icon={openFab ? "calendar-today" : "plus"}
+          icon={openFab ? "menu-open" : "menu"}
           actions={[
             { icon: "plus", label: "Add", onPress: handleOpenExpenseForm },
             {
@@ -215,23 +209,58 @@ export default function Expenses({ route, navigation }) {
           onStateChange={onStateChange}
         />
       </Portal>
+      <Portal>
+        <Snackbar
+          visible={snackBarOpen}
+          onDismiss={() => handleCloseSnackBar()}
+          action={{
+            label: "Close",
+            onPress: () => {
+              handleCloseSnackBar();
+            },
+          }}
+          duration={3000}
+        >
+          Expense deleted!
+        </Snackbar>
+      </Portal>
+      {expenseDeleteItem && (
+        <Portal>
+          <Dialog
+            visible={openDeleteDialog}
+            onDismiss={() => handleCloseDeleteDialog()}
+          >
+            <Dialog.Title>{`Delete ${expenseDeleteItem.name}?`}</Dialog.Title>
+            <Dialog.Content>
+              <Text variant="bodyLarge">{`Delete expense ${
+                expenseDeleteItem.name
+              }, ${expenseDeleteItem.import.toFixed(2)}€ on ${formatDate(
+                expenseDeleteItem.date
+              )}?`}</Text>
+            </Dialog.Content>
+            <Dialog.Actions>
+              <IconButton
+                icon="cancel"
+                onPress={() => handleCloseDeleteDialog()}
+              />
+              <IconButton
+                icon="check"
+                onPress={() => {
+                  // delete query, close dialog, make snackbar visible
+                  deleteExpenseById(db, expenseDeleteItem.expenseId);
+                  fetchExpensesAndSum();
+                  handleCloseDeleteDialog();
+                  handleOpenSnackBar();
+                }}
+              />
+            </Dialog.Actions>
+          </Dialog>
+        </Portal>
+      )}
       <StatusBar />
     </View>
   );
 }
-
-/*        <Snackbar
-          visible={snackBarOpen}
-          onDismiss={onDismissSnackBar}
-          action={{
-            label: "Close",
-            onPress: () => {
-              setSnackBarOpen(false);
-            },
-          }}
-        >
-          Element deleted
-        </Snackbar>*/
 
 const styles = StyleSheet.create({
   container: {
@@ -241,7 +270,8 @@ const styles = StyleSheet.create({
   filterContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginTop: 8,
+    marginBottom: 2,
   },
   switchContainer: {
     flexDirection: "row",
