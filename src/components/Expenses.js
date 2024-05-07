@@ -34,10 +34,12 @@ export default function Expenses({ route, navigation }) {
   const [openExpenseForm, setOpenExpenseForm] = useState(false);
   const [openSeachForm, setOpenSeachForm] = useState(false);
   const [text, setText] = useState("");
-  const [status, setStatus] = useState("unchecked");
   const [openFab, setOpenFab] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [snackBarDialog, setSnackBarDialog] = useState(
+    "This is the snackbar dialog"
+  );
   const [expenseDeleteItem, setExpenseDeleteItem] = useState();
   const [isSwitchOn, setIsSwitchOn] = useState(false);
 
@@ -130,7 +132,7 @@ export default function Expenses({ route, navigation }) {
             item.fixed +
             "\n" +
             "Category: " +
-            item.categoryId}
+            item.categoryName}
         </Text>
         <View
           style={{
@@ -160,7 +162,7 @@ export default function Expenses({ route, navigation }) {
     </View>
   );
 
-  console.log(`open snack: ${snackBarOpen}`);
+  console.log(expenseDeleteItem);
 
   if (openExpenseForm === true) {
     return <ExpenseForm db={db} handleCloseForm={handleCloseExpenseForm} />;
@@ -221,7 +223,7 @@ export default function Expenses({ route, navigation }) {
           }}
           duration={3000}
         >
-          Expense deleted!
+          {snackBarDialog}
         </Snackbar>
       </Portal>
       {expenseDeleteItem && (
@@ -250,6 +252,7 @@ export default function Expenses({ route, navigation }) {
                   deleteExpenseById(db, expenseDeleteItem.expenseId);
                   fetchExpensesAndSum();
                   handleCloseDeleteDialog();
+                  setSnackBarDialog("Expense deleted");
                   handleOpenSnackBar();
                 }}
               />
