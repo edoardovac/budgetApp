@@ -1,7 +1,6 @@
 import { View, StyleSheet, FlatList } from "react-native";
 import {
   Text,
-  ToggleButton,
   FAB,
   Portal,
   List,
@@ -10,7 +9,6 @@ import {
   IconButton,
   Dialog,
   Snackbar,
-  Chip,
 } from "react-native-paper";
 import { useState, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
@@ -175,10 +173,10 @@ export default function Expenses({ route, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text variant="bodyLarge" style={{ marginTop: 8 }}>
+      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
         TOTAL EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €
       </Text>
-      <Text variant="bodyLarge">
+      <Text variant="bodyLarge" style={{ textAlign: "center" }}>
         RECURRING EXPENSES: {expensesSumFixed.toFixed(2)} €
       </Text>
       <View style={styles.filterContainer}>

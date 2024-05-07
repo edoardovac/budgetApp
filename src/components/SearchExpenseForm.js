@@ -24,6 +24,8 @@ export default function SearchExpenseForm({ db, handleCloseForm }) {
   const [type, setType] = useState("");
   const [flag, setFlag] = useState();
 
+  console.log(expenses[0]);
+
   useEffect(() => {
     fetchExpenses();
     selectAllCategory(db, setCategories);
@@ -218,7 +220,7 @@ export default function SearchExpenseForm({ db, handleCloseForm }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 10,
   },
   input: {
     height: 40,
@@ -230,6 +232,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginTop: 8,
     marginBottom: 8,
   },
   dateInput: {

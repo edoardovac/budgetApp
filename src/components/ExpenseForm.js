@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
-import {
-  TextInput,
-  View,
-  StyleSheet,
-  Button,
-  Alert,
-  ScrollView,
-  Text,
-} from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { Picker } from "@react-native-picker/picker";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
 import { formatDate } from "./formatDate";
 import { insertExpense } from "../database/dbFunctions/insertDbFunctions/insertExpense";
+import { TextInput, Button, Text, FAB, useTheme } from "react-native-paper";
 
 export default function ExpenseForm({ db, handleCloseForm }) {
   const [name, setName] = useState("");
@@ -26,6 +19,8 @@ export default function ExpenseForm({ db, handleCloseForm }) {
   const [show, setShow] = useState(false);
   const [categories, setCategories] = useState([]);
   const [selectedCategoryName, setSelectedCategoryName] = useState("");
+
+  const { fonts } = useTheme();
 
   useEffect(() => {
     selectAllCategory(db, setCategories);
@@ -47,31 +42,42 @@ export default function ExpenseForm({ db, handleCloseForm }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <TextInput
-        style={styles.input}
-        onChangeText={setName}
-        value={name}
-        placeholder="Expense Name"
-        maxLength={50}
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setDescription}
-        value={description}
-        placeholder="Expense Description"
-        maxLength={255}
-      />
-      <TextInput
-        style={styles.input}
-        onChangeText={setGivenImport}
-        value={givenImport}
-        placeholder="Expense Import (€)"
-        maxLength={255}
-        keyboardType="numeric"
-      />
+    <View style={styles.container}>
+      <Text
+        variant="headlineMedium"
+        style={{ marginVertical: 8, textAlign: "center" }}
+      >
+        ADD AN EXPENSE
+      </Text>
+      <View>
+        <TextInput
+          label={"Expense name"}
+          style={styles.input}
+          onChangeText={setName}
+          value={name}
+          placeholder="Enter Name"
+          maxLength={50}
+        />
+        <TextInput
+          label={"Expense description"}
+          style={styles.input}
+          onChangeText={setDescription}
+          value={description}
+          placeholder="Enter Description"
+          maxLength={255}
+        />
+        <TextInput
+          label={"Expense import (€)"}
+          style={styles.input}
+          onChangeText={setGivenImport}
+          value={givenImport}
+          placeholder="Enter Import (€)"
+          maxLength={255}
+          keyboardType="numeric"
+        />
+      </View>
       <View style={styles.dateContainer}>
-        <Button onPress={showDatepicker} title="Choose date: " />
+        <Button onPress={showDatepicker}>"Choose date: "</Button>
         <TextInput
           style={styles.dateInput}
           value={date.toLocaleDateString()}
@@ -92,6 +98,10 @@ export default function ExpenseForm({ db, handleCloseForm }) {
         selectedValue={type}
         onValueChange={(itemValue, itemIndex) => setType(itemValue)}
         style={styles.picker}
+        itemStyle={{
+          fontFamily: fonts.titleLarge.fontFamily,
+          fontWeight: fonts.titleLarge.fontWeight,
+        }}
       >
         <Picker.Item label="Select Type" value="" />
         <Picker.Item label="CASH" value="CASH" />
@@ -134,9 +144,11 @@ export default function ExpenseForm({ db, handleCloseForm }) {
           />
         ))}
       </Picker>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="ADD EXPENSE"
+      <View style={styles.fabContainer}>
+        <FAB icon="cancel" label="Cancel" onPress={handleCloseForm} />
+        <FAB
+          icon={"check"}
+          label="Add expense"
           onPress={() => {
             console.log("Pressed add expense button...");
             if (name.length == 0) {
@@ -201,23 +213,18 @@ export default function ExpenseForm({ db, handleCloseForm }) {
             }
           }}
         />
-        <Text>---</Text>
-        <Button title="CANCEL" onPress={handleCloseForm} />
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 20,
+    paddingHorizontal: 16,
   },
   input: {
-    height: 40,
-    marginVertical: 8,
-    borderWidth: 1,
-    padding: 10,
+    marginBottom: 8,
   },
   dateContainer: {
     flexDirection: "row",
@@ -237,7 +244,9 @@ const styles = StyleSheet.create({
     marginVertical: 8,
     borderWidth: 1,
   },
-  buttonContainer: {
-    marginVertical: 20,
+  fabContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginVertical: 5,
   },
 });
