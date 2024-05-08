@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Alert, ScrollView } from "react-native";
+import { View, StyleSheet, Alert } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
 import { formatDate } from "./formatDate";
 import { insertExpense } from "../database/dbFunctions/insertDbFunctions/insertExpense";
-import { TextInput, Text, FAB, useTheme, HelperText } from "react-native-paper";
-import { DropDownPickers } from "./DropDownPickers";
+import { TextInput, Text, FAB, useTheme } from "react-native-paper";
+import DropDownPickers from "./DropDownPickers";
 
 export default function ExpenseForm({ db, handleCloseForm }) {
   const [name, setName] = useState("");
@@ -40,22 +40,6 @@ export default function ExpenseForm({ db, handleCloseForm }) {
     showMode("date");
   };
 
-  const handleZIndexPickers = () => {
-    if (openPickerType) {
-      setZIndexTypePicker(3000);
-      setZIndexFixedPicker(2000);
-      setZIndexCategoryPicker(2000);
-    } else if (openPickerFixed) {
-      setZIndexTypePicker(2000);
-      setZIndexFixedPicker(3000);
-      setZIndexCategoryPicker(2000);
-    } else if (openPickerCategory) {
-      setZIndexFixedPicker(2000);
-      setZIndexTypePicker(2000);
-      setZIndexCategoryPicker(3000);
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Text
@@ -64,7 +48,6 @@ export default function ExpenseForm({ db, handleCloseForm }) {
       >
         ADD AN EXPENSE
       </Text>
-
       <TextInput
         label={"Expense name"}
         style={styles.input}
