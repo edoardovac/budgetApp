@@ -23,6 +23,7 @@ import { deleteExpenseById } from "../database/dbFunctions/deleteDbfunctions/del
 import ExpenseForm from "./ExpenseForm";
 import SearchBar from "./SearchBar";
 import SearchExpenseForm from "./SearchExpenseForm";
+import Dialogs from "./Dialogs";
 
 export default function Expenses({ route, navigation }) {
   const { db } = route.params;
@@ -225,38 +226,17 @@ export default function Expenses({ route, navigation }) {
         </Snackbar>
       </Portal>
       {expenseDeleteItem && (
-        <Portal>
-          <Dialog
-            visible={openDeleteDialog}
-            onDismiss={() => handleCloseDeleteDialog()}
-          >
-            <Dialog.Title>{`Delete ${expenseDeleteItem.name}?`}</Dialog.Title>
-            <Dialog.Content>
-              <Text variant="bodyLarge">{`Delete expense ${
-                expenseDeleteItem.name
-              }, ${expenseDeleteItem.import.toFixed(2)}€ on ${formatDate(
-                expenseDeleteItem.date
-              )}?`}</Text>
-            </Dialog.Content>
-            <Dialog.Actions>
-              <IconButton
-                icon="cancel"
-                onPress={() => handleCloseDeleteDialog()}
-              />
-              <IconButton
-                icon="check"
-                onPress={() => {
-                  // delete query, close dialog, make snackbar visible
-                  deleteExpenseById(db, expenseDeleteItem.expenseId);
-                  fetchExpensesAndSum();
-                  handleCloseDeleteDialog();
-                  setSnackBarDialog("Expense deleted");
-                  handleOpenSnackBar();
-                }}
-              />
-            </Dialog.Actions>
-          </Dialog>
-        </Portal>
+        <Dialogs
+          openDialog={openDeleteDialog}
+          handleCloseDialog={handleCloseDeleteDialog}
+          item={expenseDeleteItem}
+          origin="expense"
+          db={db}
+          deleteItemById={deleteExpenseById}
+          fetchItemsAndSum={fetchExpensesAndSum}
+          setSnackBarDialog={setSnackBarDialog}
+          handleOpenSnackBar={handleOpenSnackBar}
+        />
       )}
       <StatusBar />
     </View>

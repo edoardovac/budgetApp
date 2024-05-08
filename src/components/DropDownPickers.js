@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { StyleSheet, View } from "react-native";
 import { useTheme } from "react-native-paper";
 
-export function DropDownPickers({
+export default function DropDownPickers({
   pickerTypeValue,
   pickerFixedValue,
   pickerCategoryValue,
