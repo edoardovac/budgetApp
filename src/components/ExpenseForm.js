@@ -5,7 +5,7 @@ import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/sel
 import { formatDate } from "./formatDate";
 import { insertExpense } from "../database/dbFunctions/insertDbFunctions/insertExpense";
 import { TextInput, Text, FAB, useTheme, HelperText } from "react-native-paper";
-import DropDownPicker from "react-native-dropdown-picker";
+import { DropDownPickers } from "./DropDownPickers";
 
 export default function ExpenseForm({ db, handleCloseForm }) {
   const [name, setName] = useState("");
@@ -15,70 +15,15 @@ export default function ExpenseForm({ db, handleCloseForm }) {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [openPickerFixed, setOpenPickerFixed] = useState(false);
   const [pickerFixedValue, setPickerFixedValue] = useState("");
-  const [pickerItemsFixed, setPickerItemsFixed] = useState([
-    { label: "Yes", value: "YES" },
-    { label: "No", value: "NO" },
-  ]);
-  const [openPickerType, setOpenPickerType] = useState(false);
   const [pickerTypeValue, setPickerTypeValue] = useState("");
-  const [pickerItemsType, setPickerItemsType] = useState([
-    {
-      label: "Cash",
-      value: "CASH",
-    },
-    {
-      label: "Debit Card",
-      value: "DEBIT CARD",
-    },
-    {
-      label: "Credit Card",
-      value: "CREDIT CARD",
-    },
-    {
-      label: "Check",
-      value: "CHECK",
-    },
-    {
-      label: "Wire Transfer",
-      value: "WIRE TRANSFER",
-    },
-    {
-      label: "Bank Transfer",
-      value: "BANK TRANSFER",
-    },
-    {
-      label: "Crypto",
-      value: "CRYPTO",
-    },
-    {
-      label: "Other",
-      value: "OTHER",
-    },
-  ]);
-  const [openPickerCategory, setOpenPickerCategory] = useState(false);
   const [pickerCategoryValue, setPickerCategoryValue] = useState("");
-  const [pickerItemsCategory, setPickerItemsCategory] = useState([]);
-  const [zIndexTypePicker, setZIndexTypePicker] = useState(3000);
-  const [zIndexFixedPicker, setZIndexFixedPicker] = useState(2000);
-  const [zIndexCategoryPicker, setZIndexCategoryPicker] = useState(2000);
 
   const { fonts } = useTheme();
 
   useEffect(() => {
     selectAllCategory(db, setCategories);
   }, []);
-
-  useEffect(() => {
-    setPickerItemsCategory(correctCategoryItems);
-  }, [categories]);
-
-  const correctCategoryItems = () =>
-    categories.map((category) => ({
-      label: category.name,
-      value: category.categoryId,
-    }));
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -167,101 +112,15 @@ export default function ExpenseForm({ db, handleCloseForm }) {
           onChange={onChange}
         />
       )}
-      <DropDownPicker
-        open={openPickerType}
-        value={pickerTypeValue}
-        items={pickerItemsType}
-        setOpen={setOpenPickerType}
-        setValue={setPickerTypeValue}
-        setItems={setPickerItemsType}
-        zIndex={zIndexTypePicker}
-        onOpen={() => {
-          setOpenPickerFixed(false);
-          setOpenPickerCategory(false);
-          handleZIndexPickers();
-        }}
-        textStyle={{
-          fontFamily: fonts.bodyLarge.fontFamily,
-          fontWeight: fonts.bodyLarge.fontWeight,
-          paddingHorizontal: 16,
-        }}
-        placeholder="Select type of transaction"
-        placeholderStyle={{
-          fontFamily: fonts.bodyLarge.fontFamily,
-          fontWeight: fonts.bodyLarge.fontWeight,
-          paddingHorizontal: 16,
-        }}
-        searchable={true}
-        searchTextInputProps={{
-          maxLength: 25,
-        }}
-        searchPlaceholder="Search..."
-        searchTextInputStyle={{
-          fontFamily: fonts.titleLarge.fontFamily,
-          fontWeight: fonts.titleLarge.fontWeight,
-        }}
-        style={{ marginBottom: 8 }}
-      />
-      <DropDownPicker
-        open={openPickerFixed}
-        value={pickerFixedValue}
-        items={pickerItemsFixed}
-        setOpen={setOpenPickerFixed}
-        setValue={setPickerFixedValue}
-        setItems={setPickerItemsFixed}
-        zIndex={zIndexFixedPicker}
-        onOpen={() => {
-          setOpenPickerType(false);
-          setOpenPickerCategory(false);
-          handleZIndexPickers();
-        }}
-        textStyle={{
-          fontFamily: fonts.bodyLarge.fontFamily,
-          fontWeight: fonts.bodyLarge.fontWeight,
-          paddingHorizontal: 16,
-        }}
-        placeholder="Is it a recurring expense?"
-        placeholderStyle={{
-          fontFamily: fonts.bodyLarge.fontFamily,
-          fontWeight: fonts.bodyLarge.fontWeight,
-          paddingHorizontal: 16,
-        }}
-        style={{ marginBottom: 8 }}
-      />
-      <DropDownPicker
-        open={openPickerCategory}
-        value={pickerCategoryValue}
-        items={pickerItemsCategory}
-        setOpen={setOpenPickerCategory}
-        setValue={setPickerCategoryValue}
-        setItems={setPickerItemsCategory}
-        zIndex={zIndexCategoryPicker}
-        onOpen={() => {
-          setOpenPickerType(false);
-          setOpenPickerFixed(false);
-          handleZIndexPickers();
-        }}
-        textStyle={{
-          fontFamily: fonts.bodyLarge.fontFamily,
-          fontWeight: fonts.bodyLarge.fontWeight,
-          paddingHorizontal: 16,
-        }}
-        placeholder="Select a category"
-        placeholderStyle={{
-          fontFamily: fonts.bodyLarge.fontFamily,
-          fontWeight: fonts.bodyLarge.fontWeight,
-          paddingHorizontal: 16,
-        }}
-        searchable={true}
-        searchTextInputProps={{
-          maxLength: 25,
-        }}
-        searchPlaceholder="Search..."
-        searchTextInputStyle={{
-          fontFamily: fonts.titleLarge.fontFamily,
-          fontWeight: fonts.titleLarge.fontWeight,
-        }}
-        style={{ marginBottom: 8 }}
+      <DropDownPickers
+        pickerTypeValue={pickerTypeValue}
+        pickerFixedValue={pickerFixedValue}
+        pickerCategoryValue={pickerCategoryValue}
+        setPickerTypeValue={setPickerTypeValue}
+        setPickerFixedValue={setPickerFixedValue}
+        setPickerCategoryValue={setPickerCategoryValue}
+        categories={categories}
+        origin="expense"
       />
       <View style={styles.fabContainer}>
         <FAB icon="cancel" label="Cancel" onPress={handleCloseForm} />
