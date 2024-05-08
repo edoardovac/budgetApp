@@ -1,9 +1,46 @@
 import { View } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
+import { useState } from "react";
+import DropDownPicker from "react-native-dropdown-picker";
 
 export default function Testo() {
+  const [openPickerFixed, setOpenPickerFixed] = useState(false);
+  const [pickerFixedValue, setPickerFixedValue] = useState();
+  const [pickerItemsFixed, setPickerItemsFixed] = useState([
+    { label: "YES", value: "YES" },
+    { label: "NO", value: "NO" },
+  ]);
+
+  const { fonts } = useTheme();
+
   return (
     <View>
+      <DropDownPicker
+        open={openPickerFixed}
+        value={pickerFixedValue}
+        items={pickerItemsFixed}
+        setOpen={setOpenPickerFixed}
+        setValue={setPickerFixedValue}
+        setItems={setPickerItemsFixed}
+        textStyle={{
+          fontFamily: fonts.bodyLarge.fontFamily,
+          fontWeight: fonts.bodyLarge.fontWeight,
+        }}
+        placeholder="CAZZI"
+        placeholderStyle={{
+          fontFamily: fonts.titleLarge.fontFamily,
+          fontWeight: fonts.titleLarge.fontWeight,
+        }}
+        searchable={true}
+        searchTextInputProps={{
+          maxLength: 25,
+        }}
+        searchPlaceholder="Search..."
+        searchTextInputStyle={{
+          fontFamily: fonts.titleLarge.fontFamily,
+          fontWeight: fonts.titleLarge.fontWeight,
+        }}
+      />
       <Text variant="displayLarge">Display Large</Text>
       <Text variant="displayMedium">Display Medium</Text>
       <Text variant="displaySmall">Display Small</Text>

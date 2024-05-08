@@ -1,30 +1,84 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, Alert, ScrollView } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
 import { formatDate } from "./formatDate";
 import { insertExpense } from "../database/dbFunctions/insertDbFunctions/insertExpense";
-import { TextInput, Button, Text, FAB, useTheme } from "react-native-paper";
+import { TextInput, Text, FAB, useTheme, HelperText } from "react-native-paper";
+import DropDownPicker from "react-native-dropdown-picker";
 
 export default function ExpenseForm({ db, handleCloseForm }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [givenImport, setGivenImport] = useState("");
   const [date, setDate] = useState(new Date());
-  const [type, setType] = useState("");
-  const [fixed, setFixed] = useState("");
-  const [categoryId, setCategoryId] = useState("");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [selectedCategoryName, setSelectedCategoryName] = useState("");
+  const [openPickerFixed, setOpenPickerFixed] = useState(false);
+  const [pickerFixedValue, setPickerFixedValue] = useState("");
+  const [pickerItemsFixed, setPickerItemsFixed] = useState([
+    { label: "Yes", value: "YES" },
+    { label: "No", value: "NO" },
+  ]);
+  const [openPickerType, setOpenPickerType] = useState(false);
+  const [pickerTypeValue, setPickerTypeValue] = useState("");
+  const [pickerItemsType, setPickerItemsType] = useState([
+    {
+      label: "Cash",
+      value: "CASH",
+    },
+    {
+      label: "Debit Card",
+      value: "DEBIT CARD",
+    },
+    {
+      label: "Credit Card",
+      value: "CREDIT CARD",
+    },
+    {
+      label: "Check",
+      value: "CHECK",
+    },
+    {
+      label: "Wire Transfer",
+      value: "WIRE TRANSFER",
+    },
+    {
+      label: "Bank Transfer",
+      value: "BANK TRANSFER",
+    },
+    {
+      label: "Crypto",
+      value: "CRYPTO",
+    },
+    {
+      label: "Other",
+      value: "OTHER",
+    },
+  ]);
+  const [openPickerCategory, setOpenPickerCategory] = useState(false);
+  const [pickerCategoryValue, setPickerCategoryValue] = useState("");
+  const [pickerItemsCategory, setPickerItemsCategory] = useState([]);
+  const [zIndexTypePicker, setZIndexTypePicker] = useState(3000);
+  const [zIndexFixedPicker, setZIndexFixedPicker] = useState(2000);
+  const [zIndexCategoryPicker, setZIndexCategoryPicker] = useState(2000);
 
   const { fonts } = useTheme();
 
   useEffect(() => {
     selectAllCategory(db, setCategories);
   }, []);
+
+  useEffect(() => {
+    setPickerItemsCategory(correctCategoryItems);
+  }, [categories]);
+
+  const correctCategoryItems = () =>
+    categories.map((category) => ({
+      label: category.name,
+      value: category.categoryId,
+    }));
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -41,6 +95,22 @@ export default function ExpenseForm({ db, handleCloseForm }) {
     showMode("date");
   };
 
+  const handleZIndexPickers = () => {
+    if (openPickerType) {
+      setZIndexTypePicker(3000);
+      setZIndexFixedPicker(2000);
+      setZIndexCategoryPicker(2000);
+    } else if (openPickerFixed) {
+      setZIndexTypePicker(2000);
+      setZIndexFixedPicker(3000);
+      setZIndexCategoryPicker(2000);
+    } else if (openPickerCategory) {
+      setZIndexFixedPicker(2000);
+      setZIndexTypePicker(2000);
+      setZIndexCategoryPicker(3000);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <Text
@@ -49,42 +119,45 @@ export default function ExpenseForm({ db, handleCloseForm }) {
       >
         ADD AN EXPENSE
       </Text>
-      <View>
-        <TextInput
-          label={"Expense name"}
-          style={styles.input}
-          onChangeText={setName}
-          value={name}
-          placeholder="Enter Name"
-          maxLength={50}
-        />
-        <TextInput
-          label={"Expense description"}
-          style={styles.input}
-          onChangeText={setDescription}
-          value={description}
-          placeholder="Enter Description"
-          maxLength={255}
-        />
-        <TextInput
-          label={"Expense import (€)"}
-          style={styles.input}
-          onChangeText={setGivenImport}
-          value={givenImport}
-          placeholder="Enter Import (€)"
-          maxLength={255}
-          keyboardType="numeric"
-        />
-      </View>
-      <View style={styles.dateContainer}>
-        <Button onPress={showDatepicker}>"Choose date: "</Button>
-        <TextInput
-          style={styles.dateInput}
-          value={date.toLocaleDateString()}
-          placeholder="Date"
-          editable={false}
-        />
-      </View>
+
+      <TextInput
+        label={"Expense name"}
+        style={styles.input}
+        onChangeText={setName}
+        value={name}
+        //placeholder="Enter Name..."
+        maxLength={50}
+      />
+      <TextInput
+        label={"Expense description"}
+        style={styles.input}
+        onChangeText={setDescription}
+        value={description}
+        //placeholder="Enter Description..."
+        maxLength={255}
+      />
+      <TextInput
+        label={"Expense import (€)"}
+        style={styles.input}
+        onChangeText={setGivenImport}
+        value={givenImport}
+        //placeholder="Enter Import (€)..."
+        maxLength={255}
+        keyboardType="numeric"
+      />
+      <TextInput
+        label={"Expense date: "}
+        style={styles.input}
+        value={date.toLocaleDateString()}
+        editable={false}
+        right={
+          <TextInput.Icon
+            icon="calendar"
+            label="Select date"
+            onPress={() => setShow(true)}
+          />
+        }
+      />
       {show && (
         <DateTimePicker
           testID="dateTimePicker"
@@ -94,56 +167,102 @@ export default function ExpenseForm({ db, handleCloseForm }) {
           onChange={onChange}
         />
       )}
-      <Picker
-        selectedValue={type}
-        onValueChange={(itemValue, itemIndex) => setType(itemValue)}
-        style={styles.picker}
-        itemStyle={{
+      <DropDownPicker
+        open={openPickerType}
+        value={pickerTypeValue}
+        items={pickerItemsType}
+        setOpen={setOpenPickerType}
+        setValue={setPickerTypeValue}
+        setItems={setPickerItemsType}
+        zIndex={zIndexTypePicker}
+        onOpen={() => {
+          setOpenPickerFixed(false);
+          setOpenPickerCategory(false);
+          handleZIndexPickers();
+        }}
+        textStyle={{
+          fontFamily: fonts.bodyLarge.fontFamily,
+          fontWeight: fonts.bodyLarge.fontWeight,
+          paddingHorizontal: 16,
+        }}
+        placeholder="Select type of transaction"
+        placeholderStyle={{
+          fontFamily: fonts.bodyLarge.fontFamily,
+          fontWeight: fonts.bodyLarge.fontWeight,
+          paddingHorizontal: 16,
+        }}
+        searchable={true}
+        searchTextInputProps={{
+          maxLength: 25,
+        }}
+        searchPlaceholder="Search..."
+        searchTextInputStyle={{
           fontFamily: fonts.titleLarge.fontFamily,
           fontWeight: fonts.titleLarge.fontWeight,
         }}
-      >
-        <Picker.Item label="Select Type" value="" />
-        <Picker.Item label="CASH" value="CASH" />
-        <Picker.Item label="DEBIT CARD" value="DEBIT CARD" />
-        <Picker.Item label="CREDIT CARD" value="CREDIT CARD" />
-        <Picker.Item label="CHECK" value="CHECK" />
-        <Picker.Item label="WIRE TRANSFER" value="WIRE TRANSFER" />
-        <Picker.Item label="BANK TRANSFER" value="BANK TRANSFER" />
-        <Picker.Item label="CRYPTO" value="CRYPTO" />
-        <Picker.Item label="OTHER" value="OTHER" />
-      </Picker>
-      <Picker
-        selectedValue={fixed}
-        onValueChange={(itemValue, itemIndex) => setFixed(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="Is it a fixed monthly Expense?" value="" />
-        <Picker.Item label="YES" value="YES" />
-        <Picker.Item label="NO" value="NO" />
-      </Picker>
-      <Picker
-        selectedValue={categoryId}
-        onValueChange={(itemValue, itemIndex) => {
-          setCategoryId(itemValue);
-          const selectedCategory = categories.find(
-            (category) => category.categoryId === itemValue
-          );
-          setSelectedCategoryName(
-            selectedCategory ? selectedCategory.name : ""
-          );
+        style={{ marginBottom: 8 }}
+      />
+      <DropDownPicker
+        open={openPickerFixed}
+        value={pickerFixedValue}
+        items={pickerItemsFixed}
+        setOpen={setOpenPickerFixed}
+        setValue={setPickerFixedValue}
+        setItems={setPickerItemsFixed}
+        zIndex={zIndexFixedPicker}
+        onOpen={() => {
+          setOpenPickerType(false);
+          setOpenPickerCategory(false);
+          handleZIndexPickers();
         }}
-        style={styles.picker}
-      >
-        <Picker.Item label="Select Category" value="" />
-        {categories.map((category) => (
-          <Picker.Item
-            key={category.categoryId}
-            label={category.name}
-            value={category.categoryId}
-          />
-        ))}
-      </Picker>
+        textStyle={{
+          fontFamily: fonts.bodyLarge.fontFamily,
+          fontWeight: fonts.bodyLarge.fontWeight,
+          paddingHorizontal: 16,
+        }}
+        placeholder="Is it a recurring expense?"
+        placeholderStyle={{
+          fontFamily: fonts.bodyLarge.fontFamily,
+          fontWeight: fonts.bodyLarge.fontWeight,
+          paddingHorizontal: 16,
+        }}
+        style={{ marginBottom: 8 }}
+      />
+      <DropDownPicker
+        open={openPickerCategory}
+        value={pickerCategoryValue}
+        items={pickerItemsCategory}
+        setOpen={setOpenPickerCategory}
+        setValue={setPickerCategoryValue}
+        setItems={setPickerItemsCategory}
+        zIndex={zIndexCategoryPicker}
+        onOpen={() => {
+          setOpenPickerType(false);
+          setOpenPickerFixed(false);
+          handleZIndexPickers();
+        }}
+        textStyle={{
+          fontFamily: fonts.bodyLarge.fontFamily,
+          fontWeight: fonts.bodyLarge.fontWeight,
+          paddingHorizontal: 16,
+        }}
+        placeholder="Select a category"
+        placeholderStyle={{
+          fontFamily: fonts.bodyLarge.fontFamily,
+          fontWeight: fonts.bodyLarge.fontWeight,
+          paddingHorizontal: 16,
+        }}
+        searchable={true}
+        searchTextInputProps={{
+          maxLength: 25,
+        }}
+        searchPlaceholder="Search..."
+        searchTextInputStyle={{
+          fontFamily: fonts.titleLarge.fontFamily,
+          fontWeight: fonts.titleLarge.fontWeight,
+        }}
+        style={{ marginBottom: 8 }}
+      />
       <View style={styles.fabContainer}>
         <FAB icon="cancel" label="Cancel" onPress={handleCloseForm} />
         <FAB
@@ -161,17 +280,17 @@ export default function ExpenseForm({ db, handleCloseForm }) {
                 "Import field is empty",
                 "Please complete the Import field"
               );
-            } else if (type.length == 0) {
+            } else if (pickerTypeValue.length == 0) {
               Alert.alert(
                 "Type field is empty",
                 "Please pick a Type for your expense"
               );
-            } else if (fixed.length == 0) {
+            } else if (pickerFixedValue.length == 0) {
               Alert.alert(
                 "Fixed field is empty",
                 "Please select if your expense is recurring monthly or not"
               );
-            } else if (categoryId.length == 0) {
+            } else if (pickerCategoryValue.length == 0) {
               Alert.alert(
                 "Category field is empty",
                 "Please pick a Category for your expense"
@@ -183,7 +302,7 @@ export default function ExpenseForm({ db, handleCloseForm }) {
                   givenImport
                 ).toFixed(2)} €, on ${formatDate(
                   date
-                )}, in the ${selectedCategoryName} category?`,
+                )}, in the ${pickerCategoryValue} category?`,
                 [
                   {
                     text: "Cancel",
@@ -200,9 +319,9 @@ export default function ExpenseForm({ db, handleCloseForm }) {
                         description,
                         givenImport,
                         date,
-                        type,
-                        fixed,
-                        categoryId
+                        pickerTypeValue,
+                        pickerFixedValue,
+                        pickerCategoryValue
                       );
                       Alert.alert("Success", `${name} was added to the list`);
                       handleCloseForm();
