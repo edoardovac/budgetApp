@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
-import { formatDate } from "./formatDate";
-import { insertExpense } from "../database/dbFunctions/insertDbFunctions/insertExpense";
 import { TextInput, Text, FAB, useTheme } from "react-native-paper";
 import DropDownPickers from "./DropDownPickers";
+import AddDialogs from "./AddDialogs";
 
-export default function ExpenseForm({ db, handleCloseForm }) {
+export default function ExpenseForm({
+  db,
+  handleCloseForm,
+  handleOpenSnackBar,
+  setSnackBarDialog,
+}) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [givenImport, setGivenImport] = useState("");
@@ -18,12 +22,21 @@ export default function ExpenseForm({ db, handleCloseForm }) {
   const [pickerFixedValue, setPickerFixedValue] = useState("");
   const [pickerTypeValue, setPickerTypeValue] = useState("");
   const [pickerCategoryValue, setPickerCategoryValue] = useState("");
+  const [openAddDialog, setOpenAddDialog] = useState(false);
 
   const { fonts } = useTheme();
 
   useEffect(() => {
     selectAllCategory(db, setCategories);
   }, []);
+
+  const handleOpenAddDialog = () => {
+    setOpenAddDialog(true);
+  };
+
+  const handleCloseAddDialog = () => {
+    setOpenAddDialog(false);
+  };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -105,73 +118,29 @@ export default function ExpenseForm({ db, handleCloseForm }) {
         categories={categories}
         origin="expense"
       />
+      <AddDialogs
+        openDialog={openAddDialog}
+        handleCloseDialog={handleCloseAddDialog}
+        name={name}
+        description={description}
+        givenImport={givenImport}
+        date={date}
+        pickerTypeValue={pickerTypeValue}
+        pickerFixedValue={pickerFixedValue}
+        pickerCategoryValue={pickerCategoryValue}
+        db={db}
+        handleCloseForm={handleCloseForm}
+        origin={"expense"}
+        handleOpenSnackBar={handleOpenSnackBar}
+        setSnackBarDialog={setSnackBarDialog}
+      />
       <View style={styles.fabContainer}>
         <FAB icon="cancel" label="Cancel" onPress={handleCloseForm} />
         <FAB
           icon={"check"}
           label="Add expense"
           onPress={() => {
-            console.log("Pressed add expense button...");
-            if (name.length == 0) {
-              Alert.alert(
-                "Name field is empty",
-                "Please complete the Name field"
-              );
-            } else if (givenImport.length == 0) {
-              Alert.alert(
-                "Import field is empty",
-                "Please complete the Import field"
-              );
-            } else if (pickerTypeValue.length == 0) {
-              Alert.alert(
-                "Type field is empty",
-                "Please pick a Type for your expense"
-              );
-            } else if (pickerFixedValue.length == 0) {
-              Alert.alert(
-                "Fixed field is empty",
-                "Please select if your expense is recurring monthly or not"
-              );
-            } else if (pickerCategoryValue.length == 0) {
-              Alert.alert(
-                "Category field is empty",
-                "Please pick a Category for your expense"
-              );
-            } else {
-              Alert.alert(
-                "",
-                `Do you want to add the expense ${name} ${parseFloat(
-                  givenImport
-                ).toFixed(2)} €, on ${formatDate(
-                  date
-                )}, in the ${pickerCategoryValue} category?`,
-                [
-                  {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                  },
-                  {
-                    text: "ADD",
-                    onPress: () => {
-                      console.log("ADD");
-                      insertExpense(
-                        db,
-                        name,
-                        description,
-                        givenImport,
-                        date,
-                        pickerTypeValue,
-                        pickerFixedValue,
-                        pickerCategoryValue
-                      );
-                      Alert.alert("Success", `${name} was added to the list`);
-                      handleCloseForm();
-                    },
-                  },
-                ]
-              );
-            }
+            handleOpenAddDialog();
           }}
         />
       </View>

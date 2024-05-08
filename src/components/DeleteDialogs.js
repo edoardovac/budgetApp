@@ -1,7 +1,7 @@
 import { Portal, Dialog, Text, IconButton } from "react-native-paper";
 import { formatDate } from "./formatDate";
 
-export default function Dialogs({
+export default function DeleteDialogs({
   openDialog,
   handleCloseDialog,
   item,

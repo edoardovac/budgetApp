@@ -6,8 +6,6 @@ import {
   List,
   Divider,
   useTheme,
-  IconButton,
-  Dialog,
   Snackbar,
 } from "react-native-paper";
 import { useState, useCallback } from "react";
@@ -23,7 +21,7 @@ import { deleteExpenseById } from "../database/dbFunctions/deleteDbfunctions/del
 import ExpenseForm from "./ExpenseForm";
 import SearchBar from "./SearchBar";
 import SearchExpenseForm from "./SearchExpenseForm";
-import Dialogs from "./Dialogs";
+import DeleteDialogs from "./DeleteDialogs";
 
 export default function Expenses({ route, navigation }) {
   const { db } = route.params;
@@ -164,7 +162,14 @@ export default function Expenses({ route, navigation }) {
   console.log(expenseDeleteItem);
 
   if (openExpenseForm === true) {
-    return <ExpenseForm db={db} handleCloseForm={handleCloseExpenseForm} />;
+    return (
+      <ExpenseForm
+        db={db}
+        handleCloseForm={handleCloseExpenseForm}
+        handleOpenSnackBar={handleOpenSnackBar}
+        setSnackBarDialog={setSnackBarDialog}
+      />
+    );
   }
   if (openSeachForm) {
     return (
@@ -226,7 +231,7 @@ export default function Expenses({ route, navigation }) {
         </Snackbar>
       </Portal>
       {expenseDeleteItem && (
-        <Dialogs
+        <DeleteDialogs
           openDialog={openDeleteDialog}
           handleCloseDialog={handleCloseDeleteDialog}
           item={expenseDeleteItem}

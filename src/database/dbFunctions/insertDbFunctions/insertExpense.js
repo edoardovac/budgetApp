@@ -50,7 +50,7 @@ export const insertExpense = (
         givenImport,
         givenDate,
         givenType,
-        fixed,
+        givenFixed,
         categoryId,
       ]);
     },
