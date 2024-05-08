@@ -12,6 +12,7 @@ export default function DropDownPickers({
   setPickerCategoryValue,
   categories,
   origin,
+  fixed,
 }) {
   const [openPickerType, setOpenPickerType] = useState(false);
   const [openPickerFixed, setOpenPickerFixed] = useState(false);
@@ -128,24 +129,26 @@ export default function DropDownPickers({
         searchTextInputStyle={styles.textInput}
         style={styles.container}
       />
-      <DropDownPicker
-        open={openPickerFixed}
-        value={pickerFixedValue}
-        items={pickerItemsFixed}
-        setOpen={setOpenPickerFixed}
-        setValue={setPickerFixedValue}
-        setItems={setPickerItemsFixed}
-        zIndex={zIndexFixedPicker}
-        onOpen={() => {
-          setOpenPickerType(false);
-          setOpenPickerCategory(false);
-          handleZIndexPickers();
-        }}
-        textStyle={styles.text}
-        placeholder={`Is it a recurring ${origin}?`}
-        placeholderStyle={styles.text}
-        style={styles.container}
-      />
+      {fixed && (
+        <DropDownPicker
+          open={openPickerFixed}
+          value={pickerFixedValue}
+          items={pickerItemsFixed}
+          setOpen={setOpenPickerFixed}
+          setValue={setPickerFixedValue}
+          setItems={setPickerItemsFixed}
+          zIndex={zIndexFixedPicker}
+          onOpen={() => {
+            setOpenPickerType(false);
+            setOpenPickerCategory(false);
+            handleZIndexPickers();
+          }}
+          textStyle={styles.text}
+          placeholder={`Is it a recurring ${origin}?`}
+          placeholderStyle={styles.text}
+          style={styles.container}
+        />
+      )}
       <DropDownPicker
         open={openPickerCategory}
         value={pickerCategoryValue}

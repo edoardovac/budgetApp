@@ -117,6 +117,7 @@ export default function ExpenseForm({
         setPickerCategoryValue={setPickerCategoryValue}
         categories={categories}
         origin="expense"
+        fixed={true}
       />
       <AddDialogs
         openDialog={openAddDialog}

@@ -131,13 +131,7 @@ export default function Expenses({ route, navigation }) {
             "Category: " +
             item.categoryName}
         </Text>
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-evenly",
-            marginVertical: 5,
-          }}
-        >
+        <View style={styles.fab}>
           <FAB
             icon="trash-can-outline"
             label="Delete"
@@ -267,8 +261,8 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   fab: {
-    margin: 16,
-    right: 0,
-    bottom: 0,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginVertical: 5,
   },
 });
