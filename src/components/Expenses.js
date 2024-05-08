@@ -199,22 +199,24 @@ export default function Expenses({ route, navigation }) {
         renderItem={renderItem}
         keyExtractor={(item) => item.expenseId.toString()}
       />
-      <Portal>
-        <FAB.Group
-          open={openFab}
-          visible
-          icon={openFab ? "menu-open" : "menu"}
-          actions={[
-            { icon: "plus", label: "Add", onPress: handleOpenExpenseForm },
-            {
-              icon: "magnify",
-              label: "Search all",
-              onPress: handleOpenSearchForm,
-            },
-          ]}
-          onStateChange={onStateChange}
-        />
-      </Portal>
+      <Portal.Host>
+        <Portal>
+          <FAB.Group
+            open={openFab}
+            visible
+            icon={openFab ? "menu-open" : "menu"}
+            actions={[
+              { icon: "plus", label: "Add", onPress: handleOpenExpenseForm },
+              {
+                icon: "magnify",
+                label: "Search all",
+                onPress: handleOpenSearchForm,
+              },
+            ]}
+            onStateChange={onStateChange}
+          />
+        </Portal>
+      </Portal.Host>
       <Portal>
         <Snackbar
           visible={snackBarOpen}
@@ -265,7 +267,6 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
   fab: {
-    position: "absolute",
     margin: 16,
     right: 0,
     bottom: 0,

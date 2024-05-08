@@ -130,7 +130,7 @@ export default function ExpenseForm({
         pickerCategoryValue={pickerCategoryValue}
         db={db}
         handleCloseForm={handleCloseForm}
-        origin={"expense"}
+        origin="expense"
         handleOpenSnackBar={handleOpenSnackBar}
         setSnackBarDialog={setSnackBarDialog}
       />
