@@ -299,6 +299,7 @@ export default function SearchExpenseForm({ db, handleCloseForm }) {
           handleCloseDialog={handleCloseDeleteDialog}
           item={expenseDeleteItem}
           db={db}
+          origin="expense"
           deleteItemById={deleteExpenseById}
           fetchItemsAndSum={fetchExpenses}
           setSnackBarDialog={setSnackBarDialog}

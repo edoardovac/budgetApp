@@ -153,8 +153,6 @@ export default function Expenses({ route, navigation }) {
     </View>
   );
 
-  console.log(expenseDeleteItem);
-
   if (openExpenseForm === true) {
     return (
       <ExpenseForm
@@ -170,7 +168,6 @@ export default function Expenses({ route, navigation }) {
       <SearchExpenseForm db={db} handleCloseForm={handleCloseSearchForm} />
     );
   }
-
   return (
     <View style={styles.container}>
       <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
@@ -254,11 +251,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
     marginBottom: 2,
-  },
-  switchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginLeft: 16,
   },
   fab: {
     flexDirection: "row",

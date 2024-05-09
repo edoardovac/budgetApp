@@ -86,7 +86,7 @@ export default function AddDialogs({
         <Dialog visible={openDialog} onDismiss={() => handleCloseDialog()}>
           <Dialog.Title>{`Description field is too long`}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyLarge">Please modify the description field</Text>
+            <Text variant="bodyLarge">Please modify the Description field</Text>
           </Dialog.Content>
           {dialogActionsError()}
         </Dialog>
@@ -98,7 +98,9 @@ export default function AddDialogs({
         <Dialog visible={openDialog} onDismiss={() => handleCloseDialog()}>
           <Dialog.Title>{`Import field is empty`}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyLarge">Please complete the import field</Text>
+            <Text variant="bodyLarge">
+              Please complete the Import (€) field
+            </Text>
           </Dialog.Content>
           {dialogActionsError()}
         </Dialog>

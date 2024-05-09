@@ -1,12 +1,4 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Alert,
-  Button,
-  Switch,
-} from "react-native";
+import { View, StyleSheet, FlatList } from "react-native";
 import { useCallback, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
@@ -15,13 +7,21 @@ import {
   selectIncomeSumByMonth,
   selectIncomesSumFixed,
 } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
-import { deleteIncomeById } from "../database/dbFunctions/deleteDbfunctions/deleteIncome";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { ListItem } from "@rneui/themed";
 import { formatDate } from "./formatDate";
 import IncomeForm from "./IncomeForm";
 import SearchBar from "./SearchBar";
 import SearchIncomeForm from "./SearchIncomeForm";
+import {
+  FAB,
+  Text,
+  List,
+  Portal,
+  Divider,
+  useTheme,
+  Snackbar,
+} from "react-native-paper";
+import DeleteDialogs from "./DeleteDialogs";
+import { deleteIncomeById } from "../database/dbFunctions/deleteDbfunctions/deleteIncome";
 
 export default function Incomes({ route, navigation }) {
   const { db } = route.params;
@@ -31,7 +31,16 @@ export default function Incomes({ route, navigation }) {
   const [openIncomeForm, setOpenIncomeForm] = useState(false);
   const [openSeachForm, setOpenSeachForm] = useState(false);
   const [text, setText] = useState("");
-  const [fixedFilter, setFixedFilter] = useState(false);
+  const [openFab, setOpenFab] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [snackBarDialog, setSnackBarDialog] = useState(
+    "This is the snackbar dialog"
+  );
+  const [incomeDeleteItem, setIncomeDeleteItem] = useState();
+  const [isSwitchOn, setIsSwitchOn] = useState(false);
+
+  const { fonts } = useTheme();
 
   useFocusEffect(
     useCallback(() => {
@@ -66,94 +75,164 @@ export default function Incomes({ route, navigation }) {
 
   const searchedIncomes = incomesMonth.filter((income) => {
     const search = income.name.toLowerCase().includes(text.toLowerCase());
-    if (fixedFilter) {
+    if (isSwitchOn) {
       return search && income.fixed.includes("YES");
     } else {
       return search;
     }
   });
 
-  const switchFixedFilter = () => {
-    setFixedFilter(!fixedFilter);
+  const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
+
+  // handles opening/closing of the fab.group
+  const onStateChange = ({ open }) => setOpenFab(open);
+
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  const handleOpenSnackBar = () => {
+    setSnackBarOpen(true);
+  };
+
+  const handleCloseSnackBar = () => {
+    setSnackBarOpen(false);
   };
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity>
-      <ListItem
-        bottomDivider
-        onPress={() => {
-          console.log(`${item.name}, id: ${item.incomeId}`);
-          Alert.alert(
-            `Delete ${item.name}?`,
-            `Delete income ${item.name}, ${item.import.toFixed(
-              2
-            )}€ on ${formatDate(item.date)}`,
-            [
-              {
-                text: "Cancel",
-                onPress: () => console.log("Cancel pressed"),
-                style: "cancel",
-              },
-              {
-                text: "DELETE",
-                onPress: () => {
-                  console.log("DELETE PRESSED");
-                  deleteIncomeById(db, item.incomeId);
-                  fetchIncomesAndSum();
-                },
-              },
-            ]
-          );
+    <View>
+      <List.Accordion
+        title={`${item.name} - ${item.import.toFixed(2)} €`}
+        description={`${item.description}`}
+        titleStyle={{
+          fontFamily: fonts.titleLarge.fontFamily,
+          fontWeight: fonts.titleLarge.fontWeight,
+        }}
+        descriptionStyle={{
+          fontFamily: fonts.labelLarge.fontFamily,
+          fontWeight: fonts.labelLarge.fontWeight,
         }}
       >
-        <ListItem.Content>
-          <ListItem.Title>
-            {item.name} - {item.import.toFixed(2)} €
-          </ListItem.Title>
-          <ListItem.Subtitle>
-            {formatDate(item.date)} fixed? {item.fixed}
-          </ListItem.Subtitle>
-        </ListItem.Content>
-      </ListItem>
-    </TouchableOpacity>
+        <Text variant="bodyMedium" style={{ paddingHorizontal: 24 }}>
+          {"Date: " +
+            formatDate(item.date) +
+            "\n" +
+            "Type of transaction: " +
+            item.type +
+            "\n" +
+            "Recurring? " +
+            item.fixed +
+            "\n" +
+            "Category: " +
+            item.categoryName}
+        </Text>
+        <View style={styles.fab}>
+          <FAB
+            icon="trash-can-outline"
+            label="Delete"
+            onPress={() => {
+              console.log("perdindirindina");
+              setIncomeDeleteItem(item);
+              handleCloseSnackBar();
+              handleOpenDeleteDialog();
+            }}
+          />
+          <FAB
+            icon="lead-pencil"
+            label="Modify"
+            onPress={() => console.log("mazzi")}
+          />
+        </View>
+      </List.Accordion>
+      <Divider />
+    </View>
   );
 
   if (openIncomeForm === true) {
-    return <IncomeForm db={db} handleCloseForm={handleCloseIncomeForm} />;
+    return (
+      <IncomeForm
+        db={db}
+        handleCloseForm={handleCloseIncomeForm}
+        handleOpenSnackBar={handleOpenSnackBar}
+        setSnackBarDialog={setSnackBarDialog}
+      />
+    );
   }
   if (openSeachForm) {
     return <SearchIncomeForm db={db} handleCloseForm={handleCloseSearchForm} />;
   }
   return (
     <View style={styles.container}>
-      <Text>TOTAL INCOMES THIS MONTH: {incomesSum.toFixed(2)} €</Text>
-      <Text> FIXED INCOMES: {incomesSumFixed.toFixed(2)} €</Text>
-      <Text>---</Text>
+      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
+        TOTAL INCOMES THIS MONTH: {incomesSum.toFixed(2)} €
+      </Text>
+      <Text variant="bodyLarge" style={{ textAlign: "center" }}>
+        RECURRING INCOMES: {incomesSumFixed.toFixed(2)} €
+      </Text>
+      <View style={styles.filterContainer}>
+        <SearchBar
+          text={text}
+          setText={setText}
+          placeholder={"Search this month..."}
+          status={isSwitchOn}
+          onToggleSwitch={onToggleSwitch}
+        />
+      </View>
       <FlatList
         data={searchedIncomes}
         renderItem={renderItem}
         keyExtractor={(item) => item.incomeId.toString()}
-        ListHeaderComponent={
-          <View style={styles.filterContainer}>
-            <SearchBar
-              text={text}
-              setText={setText}
-              placeholder={"Search this month..."}
-              style={{ flex: 1 }}
-            />
-            <View style={styles.switchContainer}>
-              <Text>Fixed?</Text>
-              <Switch
-                value={fixedFilter}
-                onValueChange={switchFixedFilter}
-                style={styles.switch}
-              />
-            </View>
-          </View>
-        }
       />
-      <Button title="Search all" onPress={handleOpenSearchForm} />
-      <Button title="New Income" onPress={handleOpenIncomeForm} />
+      <Portal.Host>
+        <Portal>
+          <FAB.Group
+            open={openFab}
+            visible
+            icon={openFab ? "menu-open" : "menu"}
+            actions={[
+              { icon: "plus", label: "Add", onPress: handleOpenIncomeForm },
+              {
+                icon: "magnify",
+                label: "Search all",
+                onPress: handleOpenSearchForm,
+              },
+            ]}
+            onStateChange={onStateChange}
+          />
+        </Portal>
+      </Portal.Host>
+      <Portal>
+        <Snackbar
+          visible={snackBarOpen}
+          onDismiss={() => handleCloseSnackBar()}
+          action={{
+            label: "Close",
+            onPress: () => {
+              handleCloseSnackBar();
+            },
+          }}
+          duration={3000}
+        >
+          {snackBarDialog}
+        </Snackbar>
+      </Portal>
+      {incomeDeleteItem && (
+        <DeleteDialogs
+          openDialog={openDeleteDialog}
+          handleCloseDialog={handleCloseDeleteDialog}
+          item={incomeDeleteItem}
+          origin="income"
+          db={db}
+          deleteItemById={deleteIncomeById}
+          fetchItemsAndSum={fetchIncomesAndSum}
+          setSnackBarDialog={setSnackBarDialog}
+          handleOpenSnackBar={handleOpenSnackBar}
+        />
+      )}
       <StatusBar />
     </View>
   );
@@ -162,11 +241,13 @@ export default function Incomes({ route, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    paddingHorizontal: 16,
   },
   filterContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 8,
+    marginBottom: 2,
   },
   switchContainer: {
     flexDirection: "row",
@@ -174,5 +255,10 @@ const styles = StyleSheet.create({
   },
   switch: {
     marginLeft: 10,
+  },
+  fab: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginVertical: 5,
   },
 });

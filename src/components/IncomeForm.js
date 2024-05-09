@@ -1,35 +1,42 @@
 import { useEffect, useState } from "react";
-import {
-  TextInput,
-  View,
-  StyleSheet,
-  Button,
-  Alert,
-  ScrollView,
-  Text,
-} from "react-native";
+import { View, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { Picker } from "@react-native-picker/picker";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
-import { formatDate } from "./formatDate";
-import { insertIncome } from "../database/dbFunctions/insertDbFunctions/insertIncome";
+import { TextInput, Text, FAB, useTheme } from "react-native-paper";
+import DropDownPickers from "./DropDownPickers";
+import AddDialogs from "./AddDialogs";
 
-export default function IncomeForm({ db, handleCloseForm }) {
+export default function IncomeForm({
+  db,
+  handleCloseForm,
+  handleOpenSnackBar,
+  setSnackBarDialog,
+}) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [givenImport, setGivenImport] = useState("");
   const [date, setDate] = useState(new Date());
-  const [type, setType] = useState("");
-  const [fixed, setFixed] = useState("");
-  const [categoryId, setCategoryId] = useState("");
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [selectedCategoryName, setSelectedCategoryName] = useState("");
+  const [pickerFixedValue, setPickerFixedValue] = useState("");
+  const [pickerTypeValue, setPickerTypeValue] = useState("");
+  const [pickerCategoryValue, setPickerCategoryValue] = useState("");
+  const [openAddDialog, setOpenAddDialog] = useState(false);
+
+  const { fonts } = useTheme();
 
   useEffect(() => {
     selectAllCategory(db, setCategories);
   }, []);
+
+  const handleOpenAddDialog = () => {
+    setOpenAddDialog(true);
+  };
+
+  const handleCloseAddDialog = () => {
+    setOpenAddDialog(false);
+  };
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate;
@@ -47,38 +54,51 @@ export default function IncomeForm({ db, handleCloseForm }) {
   };
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <View style={styles.container}>
+      <Text
+        variant="headlineMedium"
+        style={{ marginVertical: 8, textAlign: "center" }}
+      >
+        ADD AN INCOME
+      </Text>
       <TextInput
+        label={"Income name"}
         style={styles.input}
         onChangeText={setName}
         value={name}
-        placeholder="Income Name"
+        //placeholder="Enter Name..."
         maxLength={50}
       />
       <TextInput
+        label={"Income description"}
         style={styles.input}
         onChangeText={setDescription}
         value={description}
-        placeholder="Income Description"
+        //placeholder="Enter Description..."
         maxLength={255}
       />
       <TextInput
+        label={"Income import (€)"}
         style={styles.input}
         onChangeText={setGivenImport}
         value={givenImport}
-        placeholder="Income Import (€)"
+        //placeholder="Enter Import (€)..."
         maxLength={255}
         keyboardType="numeric"
       />
-      <View style={styles.dateContainer}>
-        <Button onPress={showDatepicker} title="Choose date: " />
-        <TextInput
-          style={styles.dateInput}
-          value={date.toLocaleDateString()}
-          placeholder="Date"
-          editable={false}
-        />
-      </View>
+      <TextInput
+        label={"Income date: "}
+        style={styles.input}
+        value={date.toLocaleDateString()}
+        editable={false}
+        right={
+          <TextInput.Icon
+            icon="calendar"
+            label="Select date"
+            onPress={() => setShow(true)}
+          />
+        }
+      />
       {show && (
         <DateTimePicker
           testID="dateTimePicker"
@@ -88,156 +108,58 @@ export default function IncomeForm({ db, handleCloseForm }) {
           onChange={onChange}
         />
       )}
-      <Picker
-        selectedValue={type}
-        onValueChange={(itemValue, itemIndex) => setType(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="Select Type" value="" />
-        <Picker.Item label="CASH" value="CASH" />
-        <Picker.Item label="DEBIT CARD" value="DEBIT CARD" />
-        <Picker.Item label="CREDIT CARD" value="CREDIT CARD" />
-        <Picker.Item label="CHECK" value="CHECK" />
-        <Picker.Item label="WIRE TRANSFER" value="WIRE TRANSFER" />
-        <Picker.Item label="BANK TRANSFER" value="BANK TRANSFER" />
-        <Picker.Item label="CRYPTO" value="CRYPTO" />
-        <Picker.Item label="OTHER" value="OTHER" />
-      </Picker>
-      <Picker
-        selectedValue={fixed}
-        onValueChange={(itemValue, itemIndex) => setFixed(itemValue)}
-        style={styles.picker}
-      >
-        <Picker.Item label="Is it a fixed monthly Income?" value="" />
-        <Picker.Item label="YES" value="YES" />
-        <Picker.Item label="NO" value="NO" />
-      </Picker>
-      <Picker
-        selectedValue={categoryId}
-        onValueChange={(itemValue, itemIndex) => {
-          setCategoryId(itemValue);
-          const selectedCategory = categories.find(
-            (category) => category.categoryId === itemValue
-          );
-          setSelectedCategoryName(
-            selectedCategory ? selectedCategory.name : ""
-          );
-        }}
-        style={styles.picker}
-      >
-        <Picker.Item label="Select Category" value="" />
-        {categories.map((category) => (
-          <Picker.Item
-            key={category.categoryId}
-            label={category.name}
-            value={category.categoryId}
-          />
-        ))}
-      </Picker>
-      <View style={styles.buttonContainer}>
-        <Button
-          title="ADD INCOME"
+      <DropDownPickers
+        pickerTypeValue={pickerTypeValue}
+        pickerFixedValue={pickerFixedValue}
+        pickerCategoryValue={pickerCategoryValue}
+        setPickerTypeValue={setPickerTypeValue}
+        setPickerFixedValue={setPickerFixedValue}
+        setPickerCategoryValue={setPickerCategoryValue}
+        categories={categories}
+        origin="income"
+        fixed={true}
+      />
+      <AddDialogs
+        openDialog={openAddDialog}
+        handleCloseDialog={handleCloseAddDialog}
+        name={name}
+        description={description}
+        givenImport={givenImport}
+        date={date}
+        pickerTypeValue={pickerTypeValue}
+        pickerFixedValue={pickerFixedValue}
+        pickerCategoryValue={pickerCategoryValue}
+        db={db}
+        handleCloseForm={handleCloseForm}
+        origin="income"
+        handleOpenSnackBar={handleOpenSnackBar}
+        setSnackBarDialog={setSnackBarDialog}
+      />
+      <View style={styles.fabContainer}>
+        <FAB icon="cancel" label="Cancel" onPress={handleCloseForm} />
+        <FAB
+          icon={"check"}
+          label="Add income"
           onPress={() => {
-            console.log("Pressed add income button...");
-            if (name.length == 0) {
-              Alert.alert(
-                "Name field is empty",
-                "Please complete the Name field"
-              );
-            } else if (givenImport.length == 0) {
-              Alert.alert(
-                "Import field is empty",
-                "Please complete the Import field"
-              );
-            } else if (type.length == 0) {
-              Alert.alert(
-                "Type field is empty",
-                "Please pick a Type for your income"
-              );
-            } else if (fixed.length == 0) {
-              Alert.alert(
-                "Fixed field is empty",
-                "Please select if your income is recurring monthly or not"
-              );
-            } else if (categoryId.length == 0) {
-              Alert.alert(
-                "Category field is empty",
-                "Please pick a Category for your income"
-              );
-            } else {
-              Alert.alert(
-                "",
-                `Do you want to add the income ${name} ${parseFloat(
-                  givenImport
-                ).toFixed(2)} €, on ${formatDate(
-                  date
-                )}, in the ${selectedCategoryName} category?`,
-                [
-                  {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                  },
-                  {
-                    text: "ADD",
-                    onPress: () => {
-                      console.log("ADD");
-                      insertIncome(
-                        db,
-                        name,
-                        description,
-                        givenImport,
-                        date,
-                        type,
-                        fixed,
-                        categoryId
-                      );
-                      Alert.alert("Success", `${name} was added to the list`);
-                      handleCloseForm();
-                    },
-                  },
-                ]
-              );
-            }
+            handleOpenAddDialog();
           }}
         />
-        <Text>---</Text>
-        <Button title="CANCEL" onPress={handleCloseForm} />
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 20,
+    paddingHorizontal: 16,
   },
   input: {
-    height: 40,
-    marginVertical: 8,
-    borderWidth: 1,
-    padding: 10,
-  },
-  dateContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
     marginBottom: 8,
   },
-  dateInput: {
-    flex: 1,
-    height: 40,
-    marginHorizontal: 8,
-    borderWidth: 1,
-    padding: 10,
-  },
-  picker: {
-    height: 40,
-    marginVertical: 8,
-    borderWidth: 1,
-  },
-  buttonContainer: {
-    marginVertical: 20,
+  fabContainer: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginVertical: 5,
   },
 });

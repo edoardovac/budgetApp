@@ -5,8 +5,8 @@ export default function DeleteDialogs({
   openDialog,
   handleCloseDialog,
   item,
-  origin,
   db,
+  origin,
   deleteItemById,
   fetchItemsAndSum,
   setSnackBarDialog,
@@ -27,7 +27,11 @@ export default function DeleteDialogs({
             icon="check"
             onPress={() => {
               // delete query, close dialog, make snackbar visible
-              deleteItemById(db, item.expenseId);
+              if (origin == "expense") {
+                deleteItemById(db, item.expenseId);
+              } else if (origin == "income") {
+                deleteItemById(db, item.incomeId);
+              }
               fetchItemsAndSum();
               handleCloseDialog();
               setSnackBarDialog(`"${item.name}" deleted`);

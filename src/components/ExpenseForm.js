@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
 import { TextInput, Text, FAB, useTheme } from "react-native-paper";
@@ -156,24 +156,6 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 8,
-  },
-  dateContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginBottom: 8,
-  },
-  dateInput: {
-    flex: 1,
-    height: 40,
-    marginHorizontal: 8,
-    borderWidth: 1,
-    padding: 10,
-  },
-  picker: {
-    height: 40,
-    marginVertical: 8,
-    borderWidth: 1,
   },
   fabContainer: {
     flexDirection: "row",

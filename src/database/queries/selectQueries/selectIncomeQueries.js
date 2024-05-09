@@ -1,5 +1,7 @@
 export const selectAllIncomeQuery = () => {
-  return `SELECT incomeId, name, description, import, date, type, fixed, categoryId FROM Income
+  return `SELECT incomeId, Income.name, Income.description, import, date, type, fixed, Income.categoryId, Category.name AS categoryName
+  FROM Income
+  LEFT JOIN Category ON Income.categoryId = Category.categoryId
   ORDER BY date DESC, incomeId DESC;`;
 };
 
@@ -21,7 +23,9 @@ export const selectExpensesNonFixedQuery = () => {
 };
 
 export const selectIncomesByMonthQuery = () => {
-  return `SELECT incomeId, name, description, import, date, type, fixed, categoryId FROM Income
+  return `SELECT incomeId, Income.name, Income.description, import, date, type, fixed, Income.categoryId, Category.name AS categoryName
+  FROM Income
+  LEFT JOIN Category ON Income.categoryId = Category.categoryId
   WHERE fixed = "YES" OR (date >= ? AND date < ?)
   ORDER BY date DESC, incomeId DESC;`;
 };
