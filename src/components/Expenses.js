@@ -8,14 +8,13 @@ import {
   useTheme,
   Snackbar,
 } from "react-native-paper";
-import { useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   selectAllExpenseMonth,
   selectExpenseSumByMonth,
   selectExpenseSumFixed,
 } from "../database/dbFunctions/selectDbFunctions/selectExpenseFunctions";
-import { useFocusEffect } from "@react-navigation/native";
 import { formatDate } from "./formatDate";
 import { deleteExpenseById } from "../database/dbFunctions/deleteDbfunctions/deleteExpense";
 import ExpenseForm from "./ExpenseForm";
@@ -23,8 +22,7 @@ import SearchBar from "./SearchBar";
 import SearchExpenseForm from "./SearchExpenseForm";
 import DeleteDialogs from "./DeleteDialogs";
 
-export default function Expenses({ route, navigation }) {
-  const { db } = route.params;
+export default function Expenses({ db }) {
   const [expensesMonth, setExpensesMonth] = useState([]);
   const [expensesSum, setExpensesSum] = useState(0);
   const [expensesSumFixed, setExpensesSumFixed] = useState(0);
@@ -42,13 +40,11 @@ export default function Expenses({ route, navigation }) {
 
   const { fonts } = useTheme();
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchExpensesAndSum();
-      setOpenExpenseForm(false);
-      setOpenSeachForm(false);
-    }, [])
-  );
+  useEffect(() => {
+    fetchExpensesAndSum();
+    setOpenExpenseForm(false);
+    setOpenSeachForm(false);
+  }, []);
 
   const fetchExpensesAndSum = () => {
     selectAllExpenseMonth(db, setExpensesMonth);

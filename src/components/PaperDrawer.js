@@ -61,14 +61,6 @@ export default function PaperDrawer(props) {
           navigation.navigate("Prova Testo");
         }}
       />
-      <Drawer.Item
-        label="Bottom"
-        active={active === "bottom"}
-        onPress={() => {
-          setActive("bottom");
-          navigation.navigate("Bottom");
-        }}
-      />
     </Drawer.Section>
   );
 }

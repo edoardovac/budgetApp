@@ -1,33 +1,22 @@
 import { View, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import * as SQLite from "expo-sqlite";
-import { useCallback, useEffect, useState } from "react";
-import { createAllTables } from "../database/dbFunctions/createDbFunctions";
 import { selectExpenseSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectExpenseFunctions";
 import { selectIncomeSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
-import { useFocusEffect } from "@react-navigation/native";
 import { selectNetBalanceByMonth } from "../database/dbFunctions/selectDbFunctions/selectNetBalanceFunction";
-import { FAB, ProgressBar, Text } from "react-native-paper";
+import { ProgressBar, Text } from "react-native-paper";
+import { useEffect, useState } from "react";
 
-const db = SQLite.openDatabase("budgetdb.db");
-
-export default function HomeScreen({ navigation }) {
+export default function HomeScreen({ db }) {
   const [expensesSum, setExpensesSum] = useState(0);
   const [incomesSum, setIncomesSum] = useState(0);
   const [netBalance, setNetBalance] = useState(0);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    createAllTables(db);
+    fetchExpenseSumByMonth();
+    fetchIncomeSumByMonth();
+    fetchNetBalanceByMonth();
   }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      fetchExpenseSumByMonth();
-      fetchIncomeSumByMonth();
-      fetchNetBalanceByMonth();
-    }, [])
-  );
 
   useEffect(() => {
     setNetBalance(incomesSum - expensesSum);
@@ -91,24 +80,3 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
 });
-
-/*<FAB
-          icon="arrow-left-bold-outline"
-          label="Expenses"
-          onPress={() =>
-            navigation.navigate("Expenses", {
-              db: db,
-            })
-          }
-        />
-        <Text>---</Text>
-        <FAB
-          icon="wallet"
-          //icon when
-          label="Incomes"
-          onPress={() =>
-            navigation.navigate("Incomes", {
-              db: db,
-            })
-          }
-        />*/

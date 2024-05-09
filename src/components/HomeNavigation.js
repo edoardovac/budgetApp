@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import * as SQLite from "expo-sqlite";
 import HomeScreen from "./HomeScreen";
 import { BottomNavigation } from "react-native-paper";
-import Testo from "./Testo";
+import Expenses from "./Expenses";
+import Incomes from "./Incomes";
+import { createAllTables } from "../database/dbFunctions/createDbFunctions";
+
+const db = SQLite.openDatabase("budgetdb.db");
 
 export default function HomeNavigation() {
   const [index, setIndex] = useState(0);
@@ -13,21 +18,31 @@ export default function HomeNavigation() {
       unfocusedIcon: "home-outline",
     },
     {
-      key: "testo",
-      title: "Testo",
+      key: "expenses",
+      title: "Expenses",
       focusedIcon: "shopping",
       unfocusedIcon: "shopping-outline",
     },
+    {
+      key: "incomes",
+      title: "Incomes",
+      focusedIcon: "wallet",
+      unfocusedIcon: "wallet-outline",
+    },
   ]);
-
-  const HomeRoute = () => <HomeScreen />;
-  const TestoRoute = () => <Testo />;
+  const HomeRoute = () => <HomeScreen db={db} />;
+  const ExpensesRoute = () => <Expenses db={db} />;
+  const IncomesRoute = () => <Incomes db={db} />;
 
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
-    //expense: ExpenseRoute,
-    testo: TestoRoute,
+    expenses: ExpensesRoute,
+    incomes: IncomesRoute,
   });
+
+  useEffect(() => {
+    createAllTables(db);
+  }, []);
 
   return (
     <BottomNavigation

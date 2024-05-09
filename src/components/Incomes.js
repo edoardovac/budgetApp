@@ -1,6 +1,5 @@
 import { View, StyleSheet, FlatList } from "react-native";
-import { useCallback, useState } from "react";
-import { useFocusEffect } from "@react-navigation/native";
+import { useState, useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   selectAllIncomeByMonth,
@@ -23,8 +22,7 @@ import {
 import DeleteDialogs from "./DeleteDialogs";
 import { deleteIncomeById } from "../database/dbFunctions/deleteDbfunctions/deleteIncome";
 
-export default function Incomes({ route, navigation }) {
-  const { db } = route.params;
+export default function Incomes({ db }) {
   const [incomesMonth, setIncomesMonth] = useState([]);
   const [incomesSum, setIncomesSum] = useState(0);
   const [incomesSumFixed, setIncomesSumFixed] = useState(0);
@@ -42,13 +40,11 @@ export default function Incomes({ route, navigation }) {
 
   const { fonts } = useTheme();
 
-  useFocusEffect(
-    useCallback(() => {
-      fetchIncomesAndSum();
-      setOpenIncomeForm(false);
-      setOpenSeachForm(false);
-    }, [])
-  );
+  useEffect(() => {
+    fetchIncomesAndSum();
+    setOpenIncomeForm(false);
+    setOpenSeachForm(false);
+  }, []);
 
   const fetchIncomesAndSum = () => {
     selectAllIncomeByMonth(db, setIncomesMonth);
