@@ -43,3 +43,11 @@ export const selectIncomeSumFixedQuery = () => {
 export const selectIncomeDateQuery = () => {
   return `SELECT date FROM Income;`;
 };
+
+export const selectIncomeDayQuery = () => {
+  return `SELECT incomeId, Income.name, Income.description, import, date, type, fixed, Income.categoryId, Category.name AS categoryName
+  FROM Income
+  LEFT JOIN Category ON Income.categoryId = Category.categoryId
+  WHERE date = ?
+  ORDER BY date DESC, incomeId DESC;`;
+};

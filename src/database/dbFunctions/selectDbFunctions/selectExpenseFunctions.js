@@ -9,6 +9,7 @@ import {
   selectExpensesByMonthQuery,
   selectExpenseSumFixedQuery,
   selectExpenseSumMonthQuery,
+  selectExpenseDayQuery,
 } from "../../queries/selectQueries/selectExpenseQueries";
 
 export const selectAllExpense = (db, setExpenses) => {
@@ -103,5 +104,18 @@ export const selectExpenseDate = (db, setExpenseDates) => {
     (error) =>
       console.error("Error when selecting all expenses dates: ", error),
     () => console.log("All expense dates selected successfully")
+  );
+};
+
+export const selectExpenseDay = (db, setExpenseDateGiven, givenDate) => {
+  db.transaction(
+    (tx) => {
+      tx.executeSql(selectExpenseDayQuery(), [givenDate], (_, { rows }) =>
+        setExpenseDateGiven(rows._array)
+      );
+    },
+    (error) =>
+      console.error("Error when selecting expenses on given day: ", error),
+    () => console.log("expenses on given day selected successfully")
   );
 };

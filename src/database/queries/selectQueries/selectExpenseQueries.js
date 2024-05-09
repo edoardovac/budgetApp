@@ -48,3 +48,11 @@ export const selectExpenseSumByCategoryIdQuery = () => {
 export const selectExpenseDateQuery = () => {
   return `SELECT date FROM Expense;`;
 };
+
+export const selectExpenseDayQuery = () => {
+  return `SELECT expenseId, Expense.name, Expense.description, import, date, type, fixed, Expense.categoryId, Category.name AS categoryName
+  FROM Expense
+  LEFT JOIN Category ON Expense.categoryId = Category.categoryId
+  WHERE date = ?
+  ORDER BY date DESC, expenseId DESC;`;
+};

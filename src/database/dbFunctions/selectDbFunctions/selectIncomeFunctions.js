@@ -4,6 +4,7 @@ import {
   selectIncomesByMonthQuery,
   selectIncomeSumByMonthQuery,
   selectIncomeSumFixedQuery,
+  selectIncomeDayQuery,
 } from "../../queries/selectQueries/selectIncomeQueries";
 import {
   currentDateStart,
@@ -102,5 +103,18 @@ export const selectIncomeDate = (db, setIncomeDate) => {
     },
     (error) => console.error("Error when selecting all income dates: ", error),
     () => console.log("All income dates selected successfully")
+  );
+};
+
+export const selectIncomeDay = (db, setIncomeDateGiven, givenDate) => {
+  db.transaction(
+    (tx) => {
+      tx.executeSql(selectIncomeDayQuery(), [givenDate], (_, { rows }) =>
+        setIncomeDateGiven(rows._array)
+      );
+    },
+    (error) =>
+      console.error("Error when selecting expenses on given day: ", error),
+    () => console.log("expenses on given day selected successfully")
   );
 };

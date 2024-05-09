@@ -39,3 +39,10 @@ export const formatDateStringYYYYMMDDReverse = (givenString) => {
   const date = new Date(year, month - 1, day + 1);
   return date;
 };
+
+export const formatDateStringYYYYMMDDToString = (givenString) => {
+  const destructured = givenString.split("-");
+  const dateString =
+    destructured[2] + "-" + destructured[1] + "-" + destructured[0];
+  return dateString;
+};
