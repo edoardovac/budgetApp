@@ -2,6 +2,7 @@ import { Portal, Dialog, Text, IconButton } from "react-native-paper";
 import { formatDate } from "./formatDate";
 import { insertExpense } from "../database/dbFunctions/insertDbFunctions/insertExpense";
 import { insertIncome } from "../database/dbFunctions/insertDbFunctions/insertIncome";
+import { insertCategory } from "../database/dbFunctions/insertDbFunctions/insertCategory";
 
 export default function AddDialogs({
   openDialog,
@@ -42,6 +43,8 @@ export default function AddDialogs({
         pickerFixedValue,
         pickerCategoryValue
       );
+    } else if (origin == "category") {
+      insertCategory(db, name, description);
     }
   };
 
@@ -92,7 +95,7 @@ export default function AddDialogs({
         </Dialog>
       </Portal>
     );
-  } else if (givenImport.length == 0) {
+  } else if (origin != "category" && givenImport.length == 0) {
     return (
       <Portal>
         <Dialog visible={openDialog} onDismiss={() => handleCloseDialog()}>
@@ -106,7 +109,7 @@ export default function AddDialogs({
         </Dialog>
       </Portal>
     );
-  } else if (pickerTypeValue.length == 0) {
+  } else if (origin != "category" && pickerTypeValue.length == 0) {
     return (
       <Portal>
         <Dialog visible={openDialog} onDismiss={() => handleCloseDialog()}>
@@ -120,7 +123,7 @@ export default function AddDialogs({
         </Dialog>
       </Portal>
     );
-  } else if (pickerFixedValue.length == 0) {
+  } else if (origin != "category" && pickerFixedValue.length == 0) {
     return (
       <Portal>
         <Dialog visible={openDialog} onDismiss={() => handleCloseDialog()}>
@@ -134,7 +137,7 @@ export default function AddDialogs({
         </Dialog>
       </Portal>
     );
-  } else if (pickerCategoryValue.length == 0) {
+  } else if (origin != "category" && pickerCategoryValue.length == 0) {
     return (
       <Portal>
         <Dialog visible={openDialog} onDismiss={() => handleCloseDialog()}>
@@ -154,13 +157,20 @@ export default function AddDialogs({
         <Dialog visible={openDialog} onDismiss={() => handleCloseDialog()}>
           <Dialog.Title>{`Add ${origin}?`}</Dialog.Title>
           <Dialog.Content>
-            <Text variant="bodyLarge">
-              {`Do you want to add the ${origin} ${name} ${parseFloat(
-                givenImport
-              ).toFixed(2)} €, on ${formatDate(
-                date
-              )}, in the ${pickerCategoryValue} category?`}
-            </Text>
+            {origin == "category" && (
+              <Text variant="bodyLarge">
+                {`Do you want to add the ${origin} ${name}?`}
+              </Text>
+            )}
+            {origin != "category" && (
+              <Text variant="bodyLarge">
+                {`Do you want to add the ${origin} ${name} ${parseFloat(
+                  givenImport
+                ).toFixed(2)} €, on ${formatDate(
+                  date
+                )}, in the ${pickerCategoryValue} category?`}
+              </Text>
+            )}
           </Dialog.Content>
           {dialogActionConfirm()}
         </Dialog>

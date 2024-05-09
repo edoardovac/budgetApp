@@ -1,22 +1,38 @@
-import { View, Text, StyleSheet, Button, FlatList, Alert } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
-import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
-import { useCallback, useEffect } from "react";
-import { useState } from "react";
-import CategoryForm from "./CategoryForm";
-import { ListItem } from "@rneui/themed";
-import { TouchableOpacity } from "react-native-gesture-handler";
-import { deleteCategoryById } from "../database/dbFunctions/deleteDbfunctions/deleteCategory";
+import { View, StyleSheet, FlatList } from "react-native";
+import {
+  Text,
+  FAB,
+  Portal,
+  List,
+  Divider,
+  useTheme,
+  Snackbar,
+} from "react-native-paper";
+import { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
+import { deleteCategoryById } from "../database/dbFunctions/deleteDbfunctions/deleteCategory";
+import CategoryForm from "./CategoryForm";
 import SearchBar from "./SearchBar";
+import DeleteDialogs from "./DeleteDialogs";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
 export default function CategoryScreen() {
   const [categories, setCategories] = useState([]);
-  const [open, setOpen] = useState(false);
+  const [openSeachForm, setOpenSeachForm] = useState(false);
   const [text, setText] = useState("");
+  const [openFab, setOpenFab] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [snackBarDialog, setSnackBarDialog] = useState(
+    "This is the snackbar dialog"
+  );
+  const [categoryDeleteItem, setCategoryDeleteItem] = useState();
+
+  const { fonts } = useTheme();
 
   useEffect(() => {
     fetchCategories();
@@ -25,21 +41,20 @@ export default function CategoryScreen() {
   useFocusEffect(
     useCallback(() => {
       fetchCategories();
-      setOpen(false);
+      setOpenSeachForm(false);
     }, [])
   );
 
   const fetchCategories = () => {
-    console.log("Fetching Categories...");
     selectAllCategory(db, setCategories);
   };
 
-  const handleOpenForm = () => {
-    setOpen(true);
+  const handleOpenCategoryForm = () => {
+    setOpenSeachForm(true);
   };
 
-  const handleCloseForm = () => {
-    setOpen(false);
+  const handleCloseCategoryForm = () => {
+    setOpenSeachForm(false);
     fetchCategories();
   };
 
@@ -47,65 +62,138 @@ export default function CategoryScreen() {
     return category.name.toLowerCase().includes(text.toLowerCase());
   });
 
+  // handles opening/closing of the fab.group
+  const onStateChange = ({ open }) => setOpenFab(open);
+
+  const handleOpenDeleteDialog = () => {
+    setOpenDeleteDialog(true);
+  };
+
+  const handleCloseDeleteDialog = () => {
+    setOpenDeleteDialog(false);
+  };
+
+  const handleOpenSnackBar = () => {
+    setSnackBarOpen(true);
+  };
+
+  const handleCloseSnackBar = () => {
+    setSnackBarOpen(false);
+  };
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity>
-      <ListItem
-        bottomDivider
-        onPress={() => {
-          console.log(item.name);
-          Alert.alert(`Delete ${item.name}?`, `Are you sure?`, [
-            {
-              text: "Cancel",
-              onPress: () => console.log("Cancel pressed"),
-              style: "cancel",
-            },
-            {
-              text: "DELETE",
-              onPress: () => {
-                console.log("DELETE PRESSED");
-                deleteCategoryById(db, item.categoryId);
-                fetchCategories();
-              },
-            },
-          ]);
+    <View>
+      <List.Accordion
+        title={`${item.name}`}
+        description={`${item.description}`}
+        titleStyle={{
+          fontFamily: fonts.titleLarge.fontFamily,
+          fontWeight: fonts.titleLarge.fontWeight,
+        }}
+        descriptionStyle={{
+          fontFamily: fonts.labelLarge.fontFamily,
+          fontWeight: fonts.labelLarge.fontWeight,
         }}
       >
-        <ListItem.Content>
-          <ListItem.Title>{item.name}</ListItem.Title>
-          <ListItem.Subtitle>{item.description}</ListItem.Subtitle>
-        </ListItem.Content>
-      </ListItem>
-    </TouchableOpacity>
+        <View style={styles.fab}>
+          <FAB
+            icon="trash-can-outline"
+            label="Delete"
+            onPress={() => {
+              console.log("perdindirindina");
+              setCategoryDeleteItem(item);
+              handleCloseSnackBar();
+              handleOpenDeleteDialog();
+              console.log(categoryDeleteItem);
+            }}
+          />
+          <FAB
+            icon="lead-pencil"
+            label="Modify"
+            onPress={() => console.log("mazzi")}
+          />
+        </View>
+      </List.Accordion>
+      <Divider />
+    </View>
   );
 
-  if (open === true) {
+  if (openSeachForm) {
     return (
-      <View>
-        <Text>ADD A CATEGORY</Text>
-        <CategoryForm db={db} handleCloseForm={handleCloseForm} />
-        <Text>---</Text>
-        <Button title="CANCEL" onPress={handleCloseForm} />
-      </View>
+      <CategoryForm
+        db={db}
+        handleCloseForm={handleCloseCategoryForm}
+        handleOpenSnackBar={handleOpenSnackBar}
+        setSnackBarDialog={setSnackBarDialog}
+      />
     );
   } else {
     return (
       <View style={styles.container}>
+        <Text
+          variant="headlineMedium"
+          style={{ marginTop: 8, textAlign: "center" }}
+        >
+          MANAGE CATEGORIES
+        </Text>
+        <View style={styles.filterContainer}>
+          <SearchBar
+            text={text}
+            setText={setText}
+            placeholder={"Search this month..."}
+            origin="category"
+          />
+        </View>
         <FlatList
           data={searchedCategories}
           renderItem={renderItem}
           keyExtractor={(item) => item.categoryId.toString()}
-          ListHeaderComponent={
-            <View style={{ marginTop: 8, marginLeft: 8 }}>
-              <SearchBar
-                text={text}
-                setText={setText}
-                placeholder={"Search categories..."}
-                origin={"category"}
-              />
-            </View>
-          }
         />
-        <Button title="New Category" onPress={handleOpenForm} />
+        <Portal.Host>
+          <Portal>
+            <FAB.Group
+              open={openFab}
+              visible
+              icon={openFab ? "menu-open" : "menu"}
+              actions={[
+                {
+                  icon: "plus",
+                  label: "Add a new Category",
+                  onPress: handleOpenCategoryForm,
+                },
+              ]}
+              onStateChange={onStateChange}
+            />
+          </Portal>
+        </Portal.Host>
+        <Portal>
+          <Snackbar
+            visible={snackBarOpen}
+            onDismiss={() => handleCloseSnackBar()}
+            action={{
+              label: "Close",
+              onPress: () => {
+                handleCloseSnackBar();
+              },
+            }}
+            duration={3000}
+          >
+            {snackBarDialog}
+          </Snackbar>
+        </Portal>
+        {categoryDeleteItem && (
+          <DeleteDialogs
+            openDialog={openDeleteDialog}
+            handleCloseDialog={handleCloseDeleteDialog}
+            item={categoryDeleteItem}
+            origin="category"
+            db={db}
+            deleteItemById={deleteCategoryById}
+            fetchItemsAndSum={fetchCategories}
+            setSnackBarDialog={setSnackBarDialog}
+            handleOpenSnackBar={handleOpenSnackBar}
+          />
+        )}
         <StatusBar />
       </View>
     );
@@ -115,6 +203,14 @@ export default function CategoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightgrey",
+    paddingHorizontal: 16,
+  },
+  filterContainer: {
+    marginVertical: 8,
+  },
+  fab: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginVertical: 5,
   },
 });

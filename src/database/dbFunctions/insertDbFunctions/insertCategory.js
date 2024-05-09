@@ -1,6 +1,6 @@
 import { insertCategoryQuery } from "../../queries/insertQueries/insertCategoryQueries";
 
-export const insertCategory = (name, description, db) => {
+export const insertCategory = (db, name, description) => {
   const givenName = name.replace(/[^a-zA-Z\s]/g, "").trim();
   let givenDescription = description.replace(/[^a-zA-Z\s]/g, "").trim();
   if (description.length === 0) {

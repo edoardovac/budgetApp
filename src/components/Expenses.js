@@ -162,83 +162,87 @@ export default function Expenses({ route, navigation }) {
         setSnackBarDialog={setSnackBarDialog}
       />
     );
-  }
-  if (openSeachForm) {
+  } else if (openSeachForm) {
     return (
       <SearchExpenseForm db={db} handleCloseForm={handleCloseSearchForm} />
     );
-  }
-  return (
-    <View style={styles.container}>
-      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
-        TOTAL EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €
-      </Text>
-      <Text variant="bodyLarge" style={{ textAlign: "center" }}>
-        RECURRING EXPENSES: {expensesSumFixed.toFixed(2)} €
-      </Text>
-      <View style={styles.filterContainer}>
-        <SearchBar
-          text={text}
-          setText={setText}
-          placeholder={"Search this month..."}
-          status={isSwitchOn}
-          onToggleSwitch={onToggleSwitch}
-        />
-      </View>
-      <FlatList
-        data={searchedExpenses}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.expenseId.toString()}
-      />
-      <Portal.Host>
-        <Portal>
-          <FAB.Group
-            open={openFab}
-            visible
-            icon={openFab ? "menu-open" : "menu"}
-            actions={[
-              { icon: "plus", label: "Add", onPress: handleOpenExpenseForm },
-              {
-                icon: "magnify",
-                label: "Search all",
-                onPress: handleOpenSearchForm,
-              },
-            ]}
-            onStateChange={onStateChange}
+  } else {
+    return (
+      <View style={styles.container}>
+        <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
+          TOTAL EXPENSES THIS MONTH: {expensesSum.toFixed(2)} €
+        </Text>
+        <Text variant="bodyLarge" style={{ textAlign: "center" }}>
+          RECURRING EXPENSES: {expensesSumFixed.toFixed(2)} €
+        </Text>
+        <View style={styles.filterContainer}>
+          <SearchBar
+            text={text}
+            setText={setText}
+            placeholder={"Search this month..."}
+            status={isSwitchOn}
+            onToggleSwitch={onToggleSwitch}
           />
-        </Portal>
-      </Portal.Host>
-      <Portal>
-        <Snackbar
-          visible={snackBarOpen}
-          onDismiss={() => handleCloseSnackBar()}
-          action={{
-            label: "Close",
-            onPress: () => {
-              handleCloseSnackBar();
-            },
-          }}
-          duration={3000}
-        >
-          {snackBarDialog}
-        </Snackbar>
-      </Portal>
-      {expenseDeleteItem && (
-        <DeleteDialogs
-          openDialog={openDeleteDialog}
-          handleCloseDialog={handleCloseDeleteDialog}
-          item={expenseDeleteItem}
-          origin="expense"
-          db={db}
-          deleteItemById={deleteExpenseById}
-          fetchItemsAndSum={fetchExpensesAndSum}
-          setSnackBarDialog={setSnackBarDialog}
-          handleOpenSnackBar={handleOpenSnackBar}
+        </View>
+        <FlatList
+          data={searchedExpenses}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.expenseId.toString()}
         />
-      )}
-      <StatusBar />
-    </View>
-  );
+        <Portal.Host>
+          <Portal>
+            <FAB.Group
+              open={openFab}
+              visible
+              icon={openFab ? "menu-open" : "menu"}
+              actions={[
+                {
+                  icon: "plus",
+                  label: "Add a new Expense",
+                  onPress: handleOpenExpenseForm,
+                },
+                {
+                  icon: "magnify",
+                  label: "Search all",
+                  onPress: handleOpenSearchForm,
+                },
+              ]}
+              onStateChange={onStateChange}
+            />
+          </Portal>
+        </Portal.Host>
+        <Portal>
+          <Snackbar
+            visible={snackBarOpen}
+            onDismiss={() => handleCloseSnackBar()}
+            action={{
+              label: "Close",
+              onPress: () => {
+                handleCloseSnackBar();
+              },
+            }}
+            duration={3000}
+          >
+            {snackBarDialog}
+          </Snackbar>
+        </Portal>
+        {expenseDeleteItem && (
+          <DeleteDialogs
+            openDialog={openDeleteDialog}
+            handleCloseDialog={handleCloseDeleteDialog}
+            item={expenseDeleteItem}
+            origin="expense"
+            db={db}
+            deleteItemById={deleteExpenseById}
+            fetchItemsAndSum={fetchExpensesAndSum}
+            setSnackBarDialog={setSnackBarDialog}
+            handleOpenSnackBar={handleOpenSnackBar}
+          />
+        )}
+        <StatusBar />
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
@@ -247,8 +251,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   filterContainer: {
-    flexDirection: "row",
-    alignItems: "center",
     marginTop: 8,
     marginBottom: 2,
   },

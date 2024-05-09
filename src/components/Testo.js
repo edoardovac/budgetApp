@@ -1,5 +1,5 @@
-import { View } from "react-native";
-import { Text, useTheme } from "react-native-paper";
+import { View, StyleSheet } from "react-native";
+import { Text, useTheme, Portal, FAB } from "react-native-paper";
 import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -13,8 +13,13 @@ export default function Testo() {
 
   const { fonts } = useTheme();
 
+  // handles opening/closing of the fab.group
+  const onStateChange = ({ open }) => setOpenFab(open);
+
+  const [openFab, setOpenFab] = useState(false);
+
   return (
-    <View>
+    <View style={{ flex: 1, paddingHorizontal: 16 }}>
       <DropDownPicker
         open={openPickerFixed}
         value={pickerFixedValue}
@@ -56,6 +61,22 @@ export default function Testo() {
       <Text variant="bodyLarge">Body Large</Text>
       <Text variant="bodyMedium">Body Medium</Text>
       <Text variant="bodySmall">Body Small</Text>
+      <Portal.Host>
+        <Portal>
+          <FAB.Group
+            open={openFab}
+            visible
+            icon={openFab ? "menu-open" : "menu"}
+            actions={[
+              {
+                icon: "plus",
+                label: "Add a new Category",
+              },
+            ]}
+            onStateChange={onStateChange}
+          />
+        </Portal>
+      </Portal.Host>
     </View>
   );
 }

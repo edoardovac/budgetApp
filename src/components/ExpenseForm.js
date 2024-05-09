@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { View, StyleSheet } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { selectAllCategory } from "../database/dbFunctions/selectDbFunctions/selectCategoryFunctions";
-import { TextInput, Text, FAB, useTheme } from "react-native-paper";
+import { TextInput, Text, FAB } from "react-native-paper";
 import DropDownPickers from "./DropDownPickers";
 import AddDialogs from "./AddDialogs";
 
@@ -23,8 +23,6 @@ export default function ExpenseForm({
   const [pickerTypeValue, setPickerTypeValue] = useState("");
   const [pickerCategoryValue, setPickerCategoryValue] = useState("");
   const [openAddDialog, setOpenAddDialog] = useState(false);
-
-  const { fonts } = useTheme();
 
   useEffect(() => {
     selectAllCategory(db, setCategories);

@@ -7,6 +7,7 @@ import CategoryScreen from "./CategoryScreen";
 import PaperDrawer from "./PaperDrawer";
 import { useTheme } from "@react-navigation/native";
 import Testo from "./Testo";
+import HomeNavigation from "./HomeNavigation";
 
 export default function drawerNavigator() {
   const { fonts } = useTheme();
@@ -30,6 +31,7 @@ export default function drawerNavigator() {
       <Drawer.Screen name="Calendar" component={CalendarScreen} />
       <Drawer.Screen name="Settings" component={SettingScreen} />
       <Drawer.Screen name="Prova Testo" component={Testo} />
+      <Drawer.Screen name="Bottom" component={HomeNavigation} />
     </Drawer.Navigator>
   );
 }

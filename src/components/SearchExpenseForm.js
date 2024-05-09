@@ -190,7 +190,7 @@ export default function SearchExpenseForm({ db, handleCloseForm }) {
         <SearchBar
           text={text}
           setText={setText}
-          placeholder={"Search income..."}
+          placeholder={"Search expense..."}
           status={isSwitchOn}
           onToggleSwitch={onToggleSwitch}
         />
@@ -321,8 +321,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
   },
   filterContainer: {
-    flexDirection: "row",
-    alignItems: "center",
     marginBottom: 8,
   },
   input: {

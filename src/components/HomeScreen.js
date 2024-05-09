@@ -73,25 +73,7 @@ export default function HomeScreen({ navigation }) {
           INCOME THIS MONTH: {incomesSum.toFixed(2)} €
         </Text>
         <Text>---</Text>
-        <FAB
-          icon="arrow-left-bold-outline"
-          label="Expenses"
-          onPress={() =>
-            navigation.navigate("Expenses", {
-              db: db,
-            })
-          }
-        />
-        <Text>---</Text>
-        <FAB
-          icon="arrow-right-bold-outline"
-          label="Incomes"
-          onPress={() =>
-            navigation.navigate("Incomes", {
-              db: db,
-            })
-          }
-        />
+
         <Text variant="headlineSmall" style={{ marginRight: 10 }}>
           Expenses over Incomes:
         </Text>
@@ -109,3 +91,24 @@ const styles = StyleSheet.create({
     paddingTop: 20,
   },
 });
+
+/*<FAB
+          icon="arrow-left-bold-outline"
+          label="Expenses"
+          onPress={() =>
+            navigation.navigate("Expenses", {
+              db: db,
+            })
+          }
+        />
+        <Text>---</Text>
+        <FAB
+          icon="wallet"
+          //icon when
+          label="Incomes"
+          onPress={() =>
+            navigation.navigate("Incomes", {
+              db: db,
+            })
+          }
+        />*/

@@ -194,7 +194,11 @@ export default function Incomes({ route, navigation }) {
             visible
             icon={openFab ? "menu-open" : "menu"}
             actions={[
-              { icon: "plus", label: "Add", onPress: handleOpenIncomeForm },
+              {
+                icon: "plus",
+                label: "Add a new Income",
+                onPress: handleOpenIncomeForm,
+              },
               {
                 icon: "magnify",
                 label: "Search all",
@@ -244,8 +248,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   filterContainer: {
-    flexDirection: "row",
-    alignItems: "center",
     marginTop: 8,
     marginBottom: 2,
   },

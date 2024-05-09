@@ -120,7 +120,7 @@ export default function DropDownPickers({
         }}
         textStyle={styles.text}
         placeholder="Select type of transaction"
-        placeholderStyle={styles.text}
+        placeholderStyle={styles.textInput}
         searchable={true}
         searchTextInputProps={{
           maxLength: 25,
@@ -145,7 +145,7 @@ export default function DropDownPickers({
           }}
           textStyle={styles.text}
           placeholder={`Is it a recurring ${origin}?`}
-          placeholderStyle={styles.text}
+          placeholderStyle={styles.textInput}
           style={styles.container}
         />
       )}
@@ -164,7 +164,7 @@ export default function DropDownPickers({
         }}
         textStyle={styles.text}
         placeholder="Select a category"
-        placeholderStyle={styles.text}
+        placeholderStyle={styles.textInput}
         searchable={true}
         searchTextInputProps={{
           maxLength: 25,
