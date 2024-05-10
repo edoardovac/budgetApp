@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet, Alert } from "react-native";
-import { StatusBar } from "expo-status-bar";
 import * as SQLite from "expo-sqlite";
+import { View, StyleSheet, Alert } from "react-native";
+import { Text } from "react-native-paper";
+import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import { selectExpenseSumByCategory } from "../database/dbFunctions/selectDbFunctions/groupByCategory";
 import {
@@ -30,7 +31,12 @@ export default function ChartsScreen() {
 
   return (
     <View style={styles.container}>
-      <Text>All Expenses By Category</Text>
+      <Text
+        variant="headlineSmall"
+        style={{ marginVertical: 8, textAlign: "center" }}
+      >
+        All Expenses By Category
+      </Text>
       {expenseSumByCategory.length > 0 && (
         <View>
           <BarChart
@@ -54,6 +60,7 @@ export default function ChartsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightblue",
+    paddingHorizontal: 16,
+    marginVertical: 8,
   },
 });
