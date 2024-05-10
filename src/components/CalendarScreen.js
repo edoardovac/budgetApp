@@ -91,6 +91,10 @@ export default function CalendarScreen() {
               setDateMessage(formatDateStringYYYYMMDDToString(day.dateString));
               fetchExpenseGivenDay(day.dateString);
             }}
+            theme={{
+              textDayFontFamily: fonts.bodyLarge.fontFamily,
+              textMonthFontFamily: fonts.headlineLarge.fontFamily,
+            }}
           />
         </View>
       );

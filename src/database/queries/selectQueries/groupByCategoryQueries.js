@@ -7,16 +7,21 @@ export const selectExpenseSumByCategoryQuery = () => {
   ORDER BY Category.categoryId;`;
 };
 
-export const selectExpenseSumByCategoryGivenTimeQuery = (
-  startDate,
-  endDate
-) => {
+export const selectExpenseSumByCategoryGivenTimeQuery = () => {
   return `SELECT SUM(Expense.import) AS value, Category.name AS label
   FROM Expense
   INNER JOIN Category ON Expense.categoryId = Category.categoryId
   WHERE date BETWEEN ? AND ?
   GROUP BY Category.name
   ORDER BY Category.categoryId;`;
+};
+
+export const selectExpenseSumByTypeGivenTimeQuery = () => {
+  return `SELECT SUM(import) AS value, type AS label
+  FROM Expense
+  WHERE date BETWEEN ? AND ?
+  GROUP BY type
+  ORDER BY type;`;
 };
 
 export const selectIncomeSumByCategoryQuery = () => {

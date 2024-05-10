@@ -18,7 +18,6 @@ export default function ChartsExpense({ db }) {
   const [mode, setMode] = useState("date");
   const [show, setShow] = useState(false);
   const [flag, setFlag] = useState();
-  const [expenseSumByCategoryTime, setExpenseSumByCategoryTime] = useState([]);
 
   useEffect(() => {
     fetchExpenseSumByCategory();
@@ -85,7 +84,7 @@ export default function ChartsExpense({ db }) {
       >
         All Expenses By Category
       </Text>
-      {expenseSumByCategory.length > 0 && (
+      {expenseSumByCategory.length > 0 ? (
         <View>
           <BarChart
             data={expenseSumByCategory}
@@ -93,6 +92,8 @@ export default function ChartsExpense({ db }) {
             onPress={pressedColumn}
           />
         </View>
+      ) : (
+        <Text variant="bodyLarge">No data available</Text>
       )}
       <View style={styles.dateContainer}>
         <TextInput
