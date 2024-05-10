@@ -5,11 +5,12 @@ import ChartsNavigation from "./ChartsNavigation";
 import CalendarScreen from "./CalendarScreen";
 import SettingScreen from "./SettingScreen";
 import PaperDrawer from "./PaperDrawer";
-import { useTheme } from "@react-navigation/native";
+//import { useTheme } from "@react-navigation/native";
+import { useTheme } from "react-native-paper";
 import Testo from "./Testo";
 
 export default function drawerNavigator() {
-  const { fonts } = useTheme();
+  const { fonts, colors } = useTheme();
   const Drawer = createDrawerNavigator();
 
   return (
@@ -21,7 +22,10 @@ export default function drawerNavigator() {
         headerTitleStyle: {
           fontFamily: fonts.titleMedium.fontFamily,
           fontWeight: fonts.titleMedium.fontWeight,
+          color: colors.onSurfaceVariant,
+          alignItems: "center",
         },
+        headerStyle: { backgroundColor: colors.surfaceVariant },
       }}
     >
       <Drawer.Screen name="Home" component={HomeNavigation} />

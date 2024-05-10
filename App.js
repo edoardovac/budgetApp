@@ -183,6 +183,16 @@ export default function App() {
   if (!fontsLoaded) {
     return <ActivityIndicator animating={true} />;
   } else {
+    /*
+    return (
+      <PaperProvider theme={CombinedDarkTheme}>
+        <NavigationContainer theme={CombinedDarkTheme}>
+          <DrawerNavigator />
+        </NavigationContainer>
+      </PaperProvider>
+    );
+       */
+    // /*
     return (
       <PaperProvider theme={CombinedDefaultTheme}>
         <NavigationContainer theme={CombinedDefaultTheme}>
@@ -190,5 +200,6 @@ export default function App() {
         </NavigationContainer>
       </PaperProvider>
     );
+    // */
   }
 }

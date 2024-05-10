@@ -12,6 +12,9 @@ export default function Testo() {
   ]);
 
   const { fonts } = useTheme();
+  const { colors } = useTheme();
+
+  console.log(colors);
 
   // handles opening/closing of the fab.group
   const onStateChange = ({ open }) => setOpenFab(open);
@@ -19,7 +22,13 @@ export default function Testo() {
   const [openFab, setOpenFab] = useState(false);
 
   return (
-    <View style={{ flex: 1, paddingHorizontal: 16 }}>
+    <View
+      style={{
+        flex: 1,
+        paddingHorizontal: 16,
+        //backgroundColor: colors.background,
+      }}
+    >
       <DropDownPicker
         open={openPickerFixed}
         value={pickerFixedValue}
@@ -46,9 +55,11 @@ export default function Testo() {
           fontWeight: fonts.titleLarge.fontWeight,
         }}
       />
-      <Text variant="displayLarge">Display Large</Text>
-      <Text variant="displayMedium">Display Medium</Text>
-      <Text variant="displaySmall">Display Small</Text>
+      <View style={{ backgroundColor: colors.background }}>
+        <Text variant="displayLarge">Display Large</Text>
+        <Text variant="displayMedium">Display Medium</Text>
+        <Text variant="displaySmall">Display Small</Text>
+      </View>
       <Text variant="headlineLarge">Headline Large</Text>
       <Text variant="headlineMedium">Headline Medium</Text>
       <Text variant="headlineSmall">Headline Small</Text>
