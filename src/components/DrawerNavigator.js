@@ -5,9 +5,7 @@ import ChartsNavigation from "./ChartsNavigation";
 import CalendarScreen from "./CalendarScreen";
 import SettingScreen from "./SettingScreen";
 import PaperDrawer from "./PaperDrawer";
-//import { useTheme } from "@react-navigation/native";
 import { useTheme } from "react-native-paper";
-import Testo from "./Testo";
 
 export default function drawerNavigator() {
   const { fonts, colors } = useTheme();
@@ -33,7 +31,6 @@ export default function drawerNavigator() {
       <Drawer.Screen name="Charts" component={ChartsNavigation} />
       <Drawer.Screen name="Calendar" component={CalendarScreen} />
       <Drawer.Screen name="Settings" component={SettingScreen} />
-      <Drawer.Screen name="Prova Testo" component={Testo} />
     </Drawer.Navigator>
   );
 }

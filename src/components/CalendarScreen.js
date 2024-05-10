@@ -55,9 +55,7 @@ export default function CalendarScreen() {
   };
 
   const fetchExpenseGivenDay = (day) => {
-    console.log(day);
     selectExpenseDay(db, setExpenseDateGiven, day);
-    console.log("porca madonna");
   };
 
   const fetchIncomeGivenDay = (day) => {

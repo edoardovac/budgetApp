@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { selectExpenseSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectExpenseFunctions";
 import { selectIncomeSumByMonth } from "../database/dbFunctions/selectDbFunctions/selectIncomeFunctions";
 import { selectNetBalanceByMonth } from "../database/dbFunctions/selectDbFunctions/selectNetBalanceFunction";
-import { ProgressBar, Text, useTheme } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 import { useEffect, useState } from "react";
 import { PieChart } from "react-native-gifted-charts";
 
@@ -60,27 +60,36 @@ export default function HomeScreen({ db }) {
       <Text variant="headlineMedium" style={styles.text}>
         Welcome back!
       </Text>
-      <View style={styles.chartContainer}>
-        <PieChart
-          donut
-          innerRadius={80}
-          data={pieData}
-          sectionAutoFocus
-          centerLabelComponent={() => (
-            <View>
-              <Text variant="titleSmall" style={styles.text}>
-                Monthly Balance:
-              </Text>
-              <Text variant="headlineMedium" style={styles.text}>
-                {`${netBalance.toFixed(2)} €`}
-              </Text>
-              <Text variant="titleMedium" style={styles.text}>
-                {`(${progress} %)`}
-              </Text>
-            </View>
-          )}
-        />
-      </View>
+      {pieData ? (
+        <View style={styles.chartContainer}>
+          <PieChart
+            donut
+            innerRadius={80}
+            data={pieData}
+            sectionAutoFocus
+            centerLabelComponent={() => (
+              <View>
+                <Text variant="titleSmall" style={styles.text}>
+                  Monthly Balance:
+                </Text>
+                <Text variant="headlineMedium" style={styles.text}>
+                  {`${netBalance.toFixed(2)} €`}
+                </Text>
+                <Text variant="titleMedium" style={styles.text}>
+                  {`(${progress} %)`}
+                </Text>
+              </View>
+            )}
+          />
+        </View>
+      ) : (
+        <View>
+          <Text variant="titleSmall" style={styles.text}>
+            No data available. If you haven't done yet, add some incomes and
+            expenses!
+          </Text>
+        </View>
+      )}
       <View>
         <Text variant="titleSmall" style={styles.text}>
           EXPENSES THIS MONTH:
