@@ -1,18 +1,27 @@
 import { View, StyleSheet, Alert } from "react-native";
-import { Text, TextInput, FAB, Portal, Snackbar } from "react-native-paper";
+import {
+  Text,
+  TextInput,
+  FAB,
+  Portal,
+  Snackbar,
+  SegmentedButtons,
+  useTheme,
+} from "react-native-paper";
 import { StatusBar } from "expo-status-bar";
 import { useEffect, useState } from "react";
 import {
   selectExpenseSumByCategoryGivenTime,
   selectExpenseSumByCategoryMonth,
+  selectExpenseSumByTypeGivenTime,
+  selectExpenseSumByTypeMonth,
 } from "../database/dbFunctions/selectDbFunctions/groupByCategory";
 import { BarChart } from "react-native-gifted-charts";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { formatDate, formatDateReverse } from "./formatDate";
-import { currentDate } from "./currentDate";
+import { formatDate } from "./formatDate";
 
 export default function ChartsExpense({ db }) {
-  const [expenseSumByCategory, setExpenseSumByCategory] = useState([]);
+  const [dataChart, setDataChart] = useState([]);
   const [date, setDate] = useState(new Date());
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -23,24 +32,30 @@ export default function ChartsExpense({ db }) {
   const [snackBarDialog, setSnackBarDialog] = useState(
     "Filters have been reset"
   );
-  const [headerText, setHeaderText] = useState("This Month");
+  const [labelText, setLabelText] = useState("This Month");
   const [openFab, setOpenFab] = useState(false);
+  const [segmentedValue, setSegmentedValue] = useState("Category");
+
+  const { fonts } = useTheme();
 
   useEffect(() => {
     fetchExpenseSumByCategory();
   }, []);
 
   const fetchExpenseSumByCategory = () => {
-    selectExpenseSumByCategoryMonth(db, setExpenseSumByCategory);
+    selectExpenseSumByCategoryMonth(db, setDataChart);
   };
 
   const fetchExpenseSumByCategoryTime = () => {
-    selectExpenseSumByCategoryGivenTime(
-      db,
-      setExpenseSumByCategory,
-      startDate,
-      endDate
-    );
+    selectExpenseSumByCategoryGivenTime(db, setDataChart, startDate, endDate);
+  };
+
+  const fetchExpenseSumByType = () => {
+    selectExpenseSumByTypeMonth(db, setDataChart);
+  };
+
+  const fetchExpenseSumByTypeTime = () => {
+    selectExpenseSumByTypeGivenTime(db, setDataChart, startDate, endDate);
   };
 
   const handleOpenSnackBar = () => {
@@ -91,17 +106,27 @@ export default function ChartsExpense({ db }) {
     }
   };
 
+  // reset filters
   const handleResetFilterPress = () => {
-    fetchExpenseSumByCategory();
+    if (segmentedValue == "Category") {
+      fetchExpenseSumByCategory();
+    } else if (segmentedValue == "Type") {
+      fetchExpenseSumByType();
+    }
     handleOpenSnackBar();
-    setHeaderText("This month");
+    setLabelText("This month");
     setStartDate("");
     setEndDate("");
   };
 
+  // applies filters
   const handleApplyFilterPress = () => {
-    fetchExpenseSumByCategoryTime();
-    setHeaderText("Selected Period");
+    if (segmentedValue == "Category") {
+      fetchExpenseSumByCategoryTime();
+    } else if (segmentedValue == "Type") {
+      fetchExpenseSumByTypeTime();
+    }
+    setLabelText("Selected Period");
   };
 
   // handles opening/closing of the fab.group
@@ -113,20 +138,29 @@ export default function ChartsExpense({ db }) {
         variant="headlineSmall"
         style={{ marginVertical: 8, textAlign: "center" }}
       >
-        Expenses By Category
+        Expenses By {segmentedValue}
       </Text>
       <Text
         variant="titleMedium"
         style={{ marginVertical: 8, textAlign: "center" }}
       >
-        {headerText}
+        {labelText}
       </Text>
-      {expenseSumByCategory.length > 0 ? (
+      {dataChart.length > 0 ? (
         <View>
           <BarChart
-            data={expenseSumByCategory}
+            data={dataChart}
             isAnimated
             onPress={pressedColumn}
+            xAxisLabelTextStyle={{
+              fontFamily: fonts.bodyMedium.fontFamily,
+              fontWeight: fonts.bodyMedium.fontWeight,
+            }}
+            yAxisTextStyle={{
+              fontFamily: fonts.bodySmall.fontFamily,
+              fontWeight: fonts.bodySmall.fontWeight,
+              fontSize: fonts.bodySmall.fontSize,
+            }}
           />
         </View>
       ) : (
@@ -134,9 +168,46 @@ export default function ChartsExpense({ db }) {
           variant="bodyLarge"
           style={{ marginVertical: 20, textAlign: "center" }}
         >
-          {`No data available between ${startDate} and ${endDate}`}
+          {`No data available between ${"\n"}${formatDate(
+            startDate
+          )} and ${formatDate(endDate)}`}
         </Text>
       )}
+      <SegmentedButtons
+        value={segmentedValue}
+        onValueChange={setSegmentedValue}
+        buttons={[
+          {
+            value: "Category",
+            label: "Category",
+            onPress: () => {
+              if (!startDate || !endDate) {
+                fetchExpenseSumByCategory();
+                setStartDate("");
+                setEndDate("");
+              } else {
+                fetchExpenseSumByCategoryTime();
+              }
+            },
+            showSelectedCheck: true,
+          },
+          {
+            value: "Type",
+            label: "Transaction type",
+            onPress: () => {
+              if (!startDate || !endDate) {
+                fetchExpenseSumByType();
+                setStartDate("");
+                setEndDate("");
+              } else {
+                fetchExpenseSumByTypeTime();
+              }
+            },
+            showSelectedCheck: true,
+          },
+        ]}
+        style={{ marginTop: 8 }}
+      />
       <View style={styles.dateContainer}>
         <TextInput
           label={"Start date: "}
@@ -235,7 +306,7 @@ const styles = StyleSheet.create({
   dateContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
-    marginVertical: 8,
+    marginTop: 8,
   },
   filterContainer: {
     marginBottom: 8,

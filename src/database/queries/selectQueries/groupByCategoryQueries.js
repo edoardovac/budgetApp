@@ -17,13 +17,14 @@ export const selectExpenseSumByCategoryGivenTimeQuery = () => {
 };
 
 export const selectExpenseSumByTypeGivenTimeQuery = () => {
-  return `SELECT SUM(import) AS value, type AS label
+  return `SELECT SUM(import) AS value, UPPER(SUBSTR(type, 1, 1)) || LOWER (SUBSTR(type, 2)) AS label
   FROM Expense
   WHERE date >= ? AND date <= ?
   GROUP BY type
   ORDER BY type;`;
 };
 
+// income queries
 export const selectIncomeSumByCategoryQuery = () => {
   return `SELECT SUM(Income.import) AS value, Category.name AS label
   FROM Income
@@ -32,6 +33,24 @@ export const selectIncomeSumByCategoryQuery = () => {
   ORDER BY Category.categoryId;`;
 };
 
+export const selectIncomeSumByTypeGivenTimeQuery = () => {
+  return `SELECT SUM(import) AS value, UPPER(SUBSTR(type, 1, 1)) || LOWER (SUBSTR(type, 2)) AS label
+  FROM Income
+  WHERE fixed = "YES" OR (date >= ? AND date < ?)
+  GROUP BY type
+  ORDER BY type;`;
+};
+
+export const selectIncomeSumByCategoryGivenTimeQuery = () => {
+  return `SELECT SUM(Income.import) AS value, Category.name AS label
+  FROM Income
+  INNER JOIN Category ON Income.categoryId = Category.categoryId
+  WHERE date >= ? AND date <= ?
+  GROUP BY Category.name
+  ORDER BY Category.categoryId;`;
+};
+
+///////////////////////////////////////////////////////////////////////////
 // for piecharts
 export const selectExpenseSumByCategoryPieQuery = () => {
   return `SELECT SUM(Expense.import) AS value, Category.name AS text
