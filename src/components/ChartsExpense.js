@@ -29,6 +29,7 @@ export default function ChartsExpense({ db }) {
   const [show, setShow] = useState(false);
   const [flag, setFlag] = useState();
   const [snackBarOpen, setSnackBarOpen] = useState(false);
+  const [snackBarDuration, setSnackBarDuration] = useState(3000);
   const [snackBarDialog, setSnackBarDialog] = useState(
     "Filters have been reset"
   );
@@ -64,11 +65,13 @@ export default function ChartsExpense({ db }) {
 
   const handleCloseSnackBar = () => {
     setSnackBarOpen(false);
+    setSnackBarDuration(3000);
   };
 
   const pressedColumn = (item, index) => {
-    console.log(item);
-    Alert.alert("", `${item.label}: ${item.value} €`);
+    setSnackBarDuration(6000);
+    setSnackBarDialog(`${item.label}: ${item.value} €`);
+    handleOpenSnackBar();
   };
 
   const onChange = (event, selectedDate) => {
@@ -113,6 +116,7 @@ export default function ChartsExpense({ db }) {
     } else if (segmentedValue == "Type") {
       fetchExpenseSumByType();
     }
+    setSnackBarDialog("Filters have been reset");
     handleOpenSnackBar();
     setLabelText("This month");
     setStartDate("");
@@ -190,10 +194,12 @@ export default function ChartsExpense({ db }) {
             label: "Category",
             onPress: () => {
               if (!startDate || !endDate) {
+                handleCloseSnackBar();
                 fetchExpenseSumByCategory();
                 setStartDate("");
                 setEndDate("");
               } else {
+                handleCloseSnackBar();
                 fetchExpenseSumByCategoryTime();
               }
             },
@@ -204,10 +210,12 @@ export default function ChartsExpense({ db }) {
             label: "Transaction type",
             onPress: () => {
               if (!startDate || !endDate) {
+                handleCloseSnackBar();
                 fetchExpenseSumByType();
                 setStartDate("");
                 setEndDate("");
               } else {
+                handleCloseSnackBar();
                 fetchExpenseSumByTypeTime();
               }
             },
@@ -269,7 +277,7 @@ export default function ChartsExpense({ db }) {
               handleCloseSnackBar();
             },
           }}
-          duration={3000}
+          duration={snackBarDuration}
         >
           {snackBarDialog}
         </Snackbar>

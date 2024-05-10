@@ -1,5 +1,6 @@
 import * as SQLite from "expo-sqlite";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, StyleSheet } from "react-native";
+import { Text, FAB } from "react-native-paper";
 import {
   populateCategoryTable,
   populateExpenseTable,
@@ -19,30 +20,45 @@ import {
 const db = SQLite.openDatabase("budgetdb.db");
 
 export default function SettingScreen() {
+  const resetDatabase = () => {
+    dropCategoryTable(db);
+    dropExpenseTable(db);
+    dropIncomeTable(db);
+    createCategoryTable(db);
+    createExpenseTable(db);
+    createIncomeTable(db);
+  };
+
   return (
     <View style={styles.container}>
-      <Text>DROP</Text>
-      <Button title="Drop Category" onPress={() => dropCategoryTable(db)} />
-      <Text>---</Text>
-      <Button title="Drop Income" onPress={() => dropIncomeTable(db)} />
-      <Text>---</Text>
-      <Button title="Drop Expense" onPress={() => dropExpenseTable(db)} />
-      <Text>CREATE</Text>
-      <Button title="Create Category" onPress={() => createCategoryTable(db)} />
-      <Text>---</Text>
-      <Button title="Create Income" onPress={() => createIncomeTable(db)} />
-      <Text>---</Text>
-      <Button title="Create Expense" onPress={() => createExpenseTable(db)} />
-      <Text>POPULATE</Text>
-      <Button
-        title="Populate Category"
-        onPress={() => populateCategoryTable(db)}
+      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
+        RESET DATABASE
+      </Text>
+      <FAB
+        icon="trash-can-outline"
+        label="Reset Database"
+        onPress={() => {
+          resetDatabase();
+        }}
       />
-      <Text>---</Text>
-      <Button title="Populate Income" onPress={() => populateIncomeTable(db)} />
-      <Text>---</Text>
-      <Button
-        title="Populate Expense"
+      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
+        POPULATE DATABASE WITH MOCK-UP DATA
+      </Text>
+      <FAB
+        icon="trash-can-outline"
+        label="Populate Category"
+        onPress={() => {
+          populateCategoryTable(db);
+        }}
+      />
+      <FAB
+        icon="lead-pencil"
+        label="Populate Income"
+        onPress={() => populateIncomeTable(db)}
+      />
+      <FAB
+        icon="lead-pencil"
+        label="Populate Expense"
         onPress={() => populateExpenseTable(db)}
       />
     </View>
@@ -50,8 +66,56 @@ export default function SettingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "red",
+  container: { flex: 1, paddingHorizontal: 16 },
+  fab: {
+    justifyContent: "space-evenly",
+    marginVertical: 5,
   },
 });
+
+/*
+      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
+        DROP
+      </Text>
+      <View style={styles.fab}>
+        <FAB
+          icon="trash-can-outline"
+          label="Drop Category"
+          onPress={() => {
+            dropCategoryTable(db);
+
+            createCategoryTable(db);
+          }}
+        />
+        <FAB
+          icon="lead-pencil"
+          label="Drop Income"
+          onPress={() => dropIncomeTable(db)}
+        />
+        <FAB
+          icon="lead-pencil"
+          label="Drop Expense"
+          onPress={() => dropExpenseTable(db)}
+        />
+      </View>
+      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
+        CREATE
+      </Text>
+      <FAB
+        icon="trash-can-outline"
+        label="Create Category"
+        onPress={() => {
+          createCategoryTable(db);
+        }}
+      />
+      <FAB
+        icon="lead-pencil"
+        label="Create Income"
+        onPress={() => createIncomeTable(db)}
+      />
+      <FAB
+        icon="lead-pencil"
+        label="Create Expense"
+        onPress={() => createExpenseTable(db)}
+      />
+      */

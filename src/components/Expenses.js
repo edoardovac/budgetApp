@@ -132,7 +132,6 @@ export default function Expenses({ db }) {
             icon="trash-can-outline"
             label="Delete"
             onPress={() => {
-              console.log("perdindirindina");
               setExpenseDeleteItem(item);
               handleCloseSnackBar();
               handleOpenDeleteDialog();
