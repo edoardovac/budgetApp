@@ -335,5 +335,4 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     marginVertical: 5,
   },
-  text: {},
 });
