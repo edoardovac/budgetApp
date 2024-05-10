@@ -173,11 +173,13 @@ export default function SearchExpenseForm({ db, handleCloseForm }) {
               handleOpenDeleteDialog();
             }}
           />
-          <FAB
-            icon="lead-pencil"
-            label="Modify"
-            onPress={() => console.log("mazzi")}
-          />
+          {1 == 2 && (
+            <FAB
+              icon="lead-pencil"
+              label="Modify"
+              onPress={() => console.log("mazzi")}
+            />
+          )}
         </View>
       </List.Accordion>
       <Divider />

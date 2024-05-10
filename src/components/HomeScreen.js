@@ -60,7 +60,7 @@ export default function HomeScreen({ db }) {
       <Text variant="headlineMedium" style={styles.text}>
         Welcome back!
       </Text>
-      {pieData ? (
+      {pieData.length > 0 ? (
         <View style={styles.chartContainer}>
           <PieChart
             donut
@@ -85,7 +85,10 @@ export default function HomeScreen({ db }) {
       ) : (
         <View>
           <Text variant="titleSmall" style={styles.text}>
-            No data available. If you haven't done yet, add some incomes and
+            No data available
+          </Text>
+          <Text variant="titleSmall" style={styles.text}>
+            If you haven't done yet, add a category then some incomes and
             expenses!
           </Text>
         </View>

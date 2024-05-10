@@ -100,18 +100,19 @@ export default function CategoryScreen() {
             icon="trash-can-outline"
             label="Delete"
             onPress={() => {
-              console.log("perdindirindina");
               setCategoryDeleteItem(item);
               handleCloseSnackBar();
               handleOpenDeleteDialog();
               console.log(categoryDeleteItem);
             }}
           />
-          <FAB
-            icon="lead-pencil"
-            label="Modify"
-            onPress={() => console.log("mazzi")}
-          />
+          {1 == 2 && (
+            <FAB
+              icon="lead-pencil"
+              label="Modify"
+              onPress={() => console.log("mazzi")}
+            />
+          )}
         </View>
       </List.Accordion>
       <Divider />

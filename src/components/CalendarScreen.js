@@ -33,8 +33,6 @@ export default function CalendarScreen() {
   const [segmentedValue, setSegmentedValue] = useState("expense");
   const [dateMessage, setDateMessage] = useState("No date selected");
 
-  console.log(segmentedValue);
-
   const { fonts } = useTheme();
 
   useEffect(() => {

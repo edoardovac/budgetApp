@@ -58,7 +58,7 @@ export default function DropDownPickers({
   const [pickerItemsCategory, setPickerItemsCategory] = useState([]);
   const [zIndexTypePicker, setZIndexTypePicker] = useState(3000);
   const [zIndexFixedPicker, setZIndexFixedPicker] = useState(2000);
-  const [zIndexCategoryPicker, setZIndexCategoryPicker] = useState(2000);
+  const [zIndexCategoryPicker, setZIndexCategoryPicker] = useState(1000);
 
   const { fonts } = useTheme();
 
@@ -76,14 +76,14 @@ export default function DropDownPickers({
     if (openPickerType) {
       setZIndexTypePicker(3000);
       setZIndexFixedPicker(2000);
-      setZIndexCategoryPicker(2000);
+      setZIndexCategoryPicker(1000);
     } else if (openPickerFixed) {
-      setZIndexTypePicker(2000);
+      setZIndexTypePicker(1000);
       setZIndexFixedPicker(3000);
-      setZIndexCategoryPicker(2000);
+      setZIndexCategoryPicker(1000);
     } else if (openPickerCategory) {
-      setZIndexFixedPicker(2000);
-      setZIndexTypePicker(2000);
+      setZIndexFixedPicker(1000);
+      setZIndexTypePicker(1000);
       setZIndexCategoryPicker(3000);
     }
   };

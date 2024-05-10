@@ -43,6 +43,7 @@ export const fetchExpenseSumByTypeTime = (
   selectExpenseSumByTypeGivenTime(db, setDataChart, startDate, endDate);
 };
 
+//charts screen first fetch method.
 export const fetchExpenseSumByCategory = () => {
   selectExpenseSumByCategory(db, setExpenseSumByCategory);
 };
