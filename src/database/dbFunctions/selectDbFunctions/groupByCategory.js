@@ -1,14 +1,25 @@
+import {
+  currentDateStart,
+  currentDateStop,
+} from "../../../components/currentDate";
 import { formatDateReverse } from "../../../components/formatDate";
 import {
   selectExpenseSumByCategoryGivenTimeQuery,
   selectExpenseSumByCategoryQuery,
 } from "../../queries/selectQueries/groupByCategoryQueries";
 
-export const selectExpenseSumByCategory = (db, setExpenseSumByCategory) => {
+export const selectExpenseSumByCategoryMonth = (
+  db,
+  setExpenseSumByCategory
+) => {
+  const dateStart = currentDateStart();
+  const dateStop = currentDateStop();
   db.transaction(
     (tx) => {
-      tx.executeSql(selectExpenseSumByCategoryQuery(), [], (_, { rows }) =>
-        setExpenseSumByCategory(rows._array)
+      tx.executeSql(
+        selectExpenseSumByCategoryGivenTimeQuery(),
+        [dateStart, dateStop],
+        (_, { rows }) => setExpenseSumByCategory(rows._array)
       );
     },
     (error) =>
@@ -25,6 +36,7 @@ export const selectExpenseSumByCategoryGivenTime = (
 ) => {
   const givenStart = formatDateReverse(startDate);
   const givenEnd = formatDateReverse(endDate);
+  console.log("format start " + givenStart);
   db.transaction(
     (tx) => {
       tx.executeSql(

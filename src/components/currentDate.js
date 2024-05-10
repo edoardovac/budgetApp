@@ -29,3 +29,18 @@ export function givenDateStop(date) {
   const givenYearNextMonth = `${givenYear}-${givenMonth}-01`;
   return givenYearNextMonth;
 }
+
+export function currentDate() {
+  // add comments
+  const today = new Date();
+  console.log("today " + today);
+  const year = today.getFullYear().toString();
+  console.log("year" + year);
+  const month = (today.getMonth() + 1).toString().padStart(2, "0");
+  console.log("month " + month);
+  const day = today.getDate().toString();
+  console.log("day " + day);
+  const todayDate = `${day}-${month}-${year}`;
+  console.log("today date " + todayDate);
+  return todayDate;
+}
