@@ -1,6 +1,15 @@
 import * as SQLite from "expo-sqlite";
 import { View, StyleSheet } from "react-native";
-import { Text, FAB } from "react-native-paper";
+import {
+  Text,
+  FAB,
+  useTheme,
+  Divider,
+  Dialog,
+  Portal,
+  Button,
+  Snackbar,
+} from "react-native-paper";
 import {
   populateCategoryTable,
   populateExpenseTable,
@@ -16,10 +25,15 @@ import {
   createExpenseTable,
   createIncomeTable,
 } from "../database/dbFunctions/createDbFunctions";
+import { useState } from "react";
 
 const db = SQLite.openDatabase("budgetdb.db");
 
 export default function SettingScreen() {
+  const [showDialog, setShowDialog] = useState(false);
+  const [openSnachBar, setOpenSnackBar] = useState(false);
+  const [snackBarText, setSnackBarText] = useState("This is the snackbar text");
+
   const resetDatabase = () => {
     dropCategoryTable(db);
     dropExpenseTable(db);
@@ -29,93 +43,96 @@ export default function SettingScreen() {
     createIncomeTable(db);
   };
 
+  const { colors } = useTheme();
+
+  const hideDialog = () => setShowDialog(false);
+
+  const styles = StyleSheet.create({
+    container: { flex: 1, paddingHorizontal: 16 },
+    text: { marginTop: 8, textAlign: "center" },
+    fabContainer: {
+      marginVertical: 8,
+    },
+    fab: { marginBottom: 12 },
+    divider: { marginVertical: 16 },
+  });
+
   return (
     <View style={styles.container}>
-      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
+      <Text variant="headlineMedium" style={styles.text}>
         RESET DATABASE
       </Text>
-      <FAB
-        icon="trash-can-outline"
-        label="Reset Database"
-        onPress={() => {
-          resetDatabase();
-        }}
-      />
-      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
+      <View style={styles.fabContainer}>
+        <FAB
+          icon="restore-alert"
+          label="Reset Database"
+          onPress={() => {
+            setShowDialog(true);
+          }}
+        />
+      </View>
+      <Divider style={styles.divider} bold={true} />
+      <Text variant="headlineMedium" style={styles.text}>
         POPULATE DATABASE WITH MOCK-UP DATA
       </Text>
-      <FAB
-        icon="trash-can-outline"
-        label="Populate Category"
-        onPress={() => {
-          populateCategoryTable(db);
-        }}
-      />
-      <FAB
-        icon="lead-pencil"
-        label="Populate Income"
-        onPress={() => populateIncomeTable(db)}
-      />
-      <FAB
-        icon="lead-pencil"
-        label="Populate Expense"
-        onPress={() => populateExpenseTable(db)}
-      />
+      <View style={styles.fabContainer}>
+        <FAB
+          icon="shopping-outline"
+          label="Populate Expense"
+          onPress={() => populateExpenseTable(db)}
+          style={styles.fab}
+        />
+        <FAB
+          icon="wallet-plus-outline"
+          label="Populate Income"
+          onPress={() => populateIncomeTable(db)}
+          style={styles.fab}
+        />
+        <FAB
+          icon="playlist-plus"
+          label="Populate Category"
+          onPress={() => {
+            populateCategoryTable(db);
+          }}
+          style={styles.fab}
+        />
+      </View>
+      <Portal>
+        <Dialog
+          visible={showDialog}
+          onDismiss={hideDialog}
+          theme={{ colors: { primary: colors.error } }}
+        >
+          <Dialog.Icon icon="alert" />
+          <Dialog.Title style={{ textAlign: "center" }}>WARNING</Dialog.Title>
+          <Dialog.Content>
+            <Text variant="bodyLarge" style={{ textAlign: "center" }}>
+              {"This action is irreversible.\nYou WILL loose all your data."}
+            </Text>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={() => hideDialog()}>Cancel</Button>
+            <Button
+              textColor={colors.error}
+              onPress={() => {
+                resetDatabase();
+                setSnackBarText("Database reset");
+                setOpenSnackBar(true);
+              }}
+            >
+              I understand
+            </Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
+      <Portal>
+        <Snackbar
+          visible={openSnachBar}
+          onDismiss={() => setOpenSnackBar(false)}
+        >
+          {snackBarText}
+        </Snackbar>
+      </Portal>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, paddingHorizontal: 16 },
-  fab: {
-    justifyContent: "space-evenly",
-    marginVertical: 5,
-  },
-});
-
-/*
-      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
-        DROP
-      </Text>
-      <View style={styles.fab}>
-        <FAB
-          icon="trash-can-outline"
-          label="Drop Category"
-          onPress={() => {
-            dropCategoryTable(db);
-
-            createCategoryTable(db);
-          }}
-        />
-        <FAB
-          icon="lead-pencil"
-          label="Drop Income"
-          onPress={() => dropIncomeTable(db)}
-        />
-        <FAB
-          icon="lead-pencil"
-          label="Drop Expense"
-          onPress={() => dropExpenseTable(db)}
-        />
-      </View>
-      <Text variant="bodyLarge" style={{ marginTop: 8, textAlign: "center" }}>
-        CREATE
-      </Text>
-      <FAB
-        icon="trash-can-outline"
-        label="Create Category"
-        onPress={() => {
-          createCategoryTable(db);
-        }}
-      />
-      <FAB
-        icon="lead-pencil"
-        label="Create Income"
-        onPress={() => createIncomeTable(db)}
-      />
-      <FAB
-        icon="lead-pencil"
-        label="Create Expense"
-        onPress={() => createExpenseTable(db)}
-      />
-      */
