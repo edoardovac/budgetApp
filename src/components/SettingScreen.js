@@ -79,13 +79,21 @@ export default function SettingScreen() {
         <FAB
           icon="shopping-outline"
           label="Populate Expense"
-          onPress={() => populateExpenseTable(db)}
+          onPress={() => {
+            populateExpenseTable(db);
+            setSnackBarText("Expense table populated");
+            setOpenSnackBar(true);
+          }}
           style={styles.fab}
         />
         <FAB
           icon="wallet-plus-outline"
           label="Populate Income"
-          onPress={() => populateIncomeTable(db)}
+          onPress={() => {
+            populateIncomeTable(db);
+            setSnackBarText("Income table populated");
+            setOpenSnackBar(true);
+          }}
           style={styles.fab}
         />
         <FAB
@@ -93,6 +101,8 @@ export default function SettingScreen() {
           label="Populate Category"
           onPress={() => {
             populateCategoryTable(db);
+            setSnackBarText("Category table populated");
+            setOpenSnackBar(true);
           }}
           style={styles.fab}
         />
@@ -115,6 +125,7 @@ export default function SettingScreen() {
             <Button
               textColor={colors.error}
               onPress={() => {
+                hideDialog();
                 resetDatabase();
                 setSnackBarText("Database reset");
                 setOpenSnackBar(true);
@@ -129,6 +140,12 @@ export default function SettingScreen() {
         <Snackbar
           visible={openSnachBar}
           onDismiss={() => setOpenSnackBar(false)}
+          action={{
+            label: "Close",
+            onPress: () => {
+              setOpenSnackBar(false);
+            },
+          }}
         >
           {snackBarText}
         </Snackbar>
