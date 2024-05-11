@@ -166,9 +166,7 @@ export default function AddDialogs({
               <Text variant="bodyLarge">
                 {`Do you want to add the ${origin} ${name} ${parseFloat(
                   givenImport
-                ).toFixed(2)} €, on ${formatDate(
-                  date
-                )}, in the ${pickerCategoryValue} category?`}
+                ).toFixed(2)} €, on ${formatDate(date)}?`}
               </Text>
             )}
           </Dialog.Content>

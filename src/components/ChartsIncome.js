@@ -36,7 +36,7 @@ export default function ChartsIncome({ db }) {
   const [openFab, setOpenFab] = useState(false);
   const [segmentedValue, setSegmentedValue] = useState("Category");
 
-  const { fonts } = useTheme();
+  const { fonts, colors } = useTheme();
 
   useEffect(() => {
     fetchIncomeSumByCategory();
@@ -155,12 +155,20 @@ export default function ChartsIncome({ db }) {
             xAxisLabelTextStyle={{
               fontFamily: fonts.bodyMedium.fontFamily,
               fontWeight: fonts.bodyMedium.fontWeight,
+              color: colors.onBackground,
             }}
             yAxisTextStyle={{
               fontFamily: fonts.bodySmall.fontFamily,
               fontWeight: fonts.bodySmall.fontWeight,
               fontSize: fonts.bodySmall.fontSize,
+              color: colors.onBackground,
             }}
+            frontColor={colors.onPrimaryContainer}
+            barStyle={{
+              borderWidth: 1,
+              borderColor: "black",
+            }}
+            backgroundColor={colors.primaryContainer}
           />
         </View>
       ) : (
