@@ -1,4 +1,4 @@
-# Budgeting App
+# BudgetApp
 
 BudgetApp is a React Native project developed as the main assignment of the 2024 Mobile Programming course, Haaga-Helia UAS.
 
