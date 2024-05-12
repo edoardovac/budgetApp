@@ -8,6 +8,18 @@ The app facilitates monthly balance management by allowing you to explore your e
 It offers multiple filters for organizing spending and tracking progress, as well as a detailed statistical analysis is provided through various charts.
 Additionally, a calendar feature helps visualize spending habits effectively.
 
+## Screens
+<p float="left">
+<img src="https://github.com/edoardovac/budgetApp/blob/main/screenshots/Frame_1.png" alt="Home-Screen" width="200"/>
+<img src="https://github.com/edoardovac/budgetApp/blob/main/screenshots/Frame_2.png" alt="Home-Screen" width="200"/>
+<img src="https://github.com/edoardovac/budgetApp/blob/main/screenshots/Frame_3.png" alt="Home-Screen" width="200"/>
+</p>
+<p float="left">
+<img src="https://github.com/edoardovac/budgetApp/blob/main/screenshots/Frame_4.png" alt="Home-Screen" width="200"/>
+<img src="https://github.com/edoardovac/budgetApp/blob/main/screenshots/Frame_5.png" alt="Home-Screen" width="200"/>
+<img src="https://github.com/edoardovac/budgetApp/blob/main/screenshots/Frame_6.png" alt="Home-Screen" width="200"/>
+</p>
+
 ## Technologies used in the Project
 
 - Expo
