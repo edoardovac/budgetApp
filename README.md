@@ -30,6 +30,12 @@ Additionally, a calendar feature helps visualize spending habits effectively.
 - React Native Calendars
 - React Native Paper
 
+## How to install (Android only)
+
+- You can download version 1.0.0 on the [Release section](https://github.com/edoardovac/budgetApp/releases/tag/v1.0.0), under "Assets".
+- To install it, find and open the downloaded file.
+- If installation from unknow sources is disabled, you can follow this [guide](https://www.androidauthority.com/how-to-install-apks-31494/).
+
 ## Developer
 
 - [Edoardo Vacca](https://github.com/edoardovac)
