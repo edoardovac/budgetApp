@@ -1,6 +1,6 @@
 # Budgeting App
 
-Budgeting App is a React Native project developed as the main assignment of the 2024 Mobile Programming course, Haaga-Helia UAS.
+BudgetApp is a React Native project developed as the main assignment of the 2024 Mobile Programming course, Haaga-Helia UAS.
 
 ## Description
 
@@ -17,3 +17,7 @@ Additionally, a calendar feature helps visualize spending habits effectively.
 - React Native Dropdown Picker
 - React Native Calendars
 - React Native Paper
+
+## Developer
+
+- [Edoardo Vacca](https://github.com/edoardovac)
