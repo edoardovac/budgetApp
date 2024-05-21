@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import * as SQLite from "expo-sqlite";
 import HomeScreen from "./HomeScreen";
-import { BottomNavigation } from "react-native-paper";
+import { BottomNavigation, useTheme } from "react-native-paper";
 import Expenses from "./Expenses";
 import Incomes from "./Incomes";
 import { createAllTables } from "../database/dbFunctions/createDbFunctions";
@@ -34,6 +34,8 @@ export default function HomeNavigation() {
   const ExpensesRoute = () => <Expenses db={db} />;
   const IncomesRoute = () => <Incomes db={db} />;
 
+  const { colors } = useTheme();
+
   const renderScene = BottomNavigation.SceneMap({
     home: HomeRoute,
     expenses: ExpensesRoute,
@@ -49,6 +51,7 @@ export default function HomeNavigation() {
       navigationState={{ index, routes }}
       onIndexChange={setIndex}
       renderScene={renderScene}
+      activeIndicatorStyle={{ backgroundColor: colors.primaryContainer }}
     />
   );
 }

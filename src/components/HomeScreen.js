@@ -56,7 +56,15 @@ export default function HomeScreen({ db }) {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={{
+        flex: 1,
+        paddingHorizontal: 16,
+        marginTop: 10,
+        justifyContent: "space-around",
+        backgroundColor: colors.background,
+      }}
+    >
       <Text variant="headlineMedium" style={styles.text}>
         Welcome back!
       </Text>
@@ -93,7 +101,9 @@ export default function HomeScreen({ db }) {
           </Text>
         </View>
       )}
-      <View>
+      <View
+        style={{ backgroundColor: colors.primaryContainer, borderRadius: 50 }}
+      >
         <Text variant="titleSmall" style={styles.text}>
           EXPENSES THIS MONTH:
         </Text>
